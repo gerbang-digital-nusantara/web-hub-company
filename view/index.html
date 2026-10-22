@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HUB by Xpanca — Penjualan, Stok & Keuangan dalam Satu Alur</title>
+    <meta
+      name="description"
+      content="HUB adalah sistem operasional bisnis yang menyatukan penjualan, pembelian, stok multi-gudang, aset, dan akuntansi. Setiap transaksi otomatis memperbarui stok dan jurnal."
+    />
+    <meta name="theme-color" content="#1f3a68" />
+    <link rel="icon" type="image/png" href="/assets/images/logo.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUB by Xpanca — Penjualan, Stok & Keuangan dalam Satu Alur" />
+    <meta
+      property="og:description"
+      content="Setiap transaksi otomatis memperbarui stok dan jurnal akuntansi. Laporan laba rugi & neraca selalu siap, tanpa input ganda."
+    />
+    <meta property="og:image" content="/assets/images/hub-wordmark.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <!-- ?v= = cache-buster: aset di-cache 1 hari (main.go), naikkan saat CSS/JS diubah. -->
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261022-3" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="site-header" id="header">
+      <nav class="container nav" aria-label="Navigasi utama">
+        <a class="brand" href="#" aria-label="HUB by Xpanca — ke atas">
+          <img src="/assets/images/logo.png" alt="" width="38" height="38" />
+          <span class="brand-name">HUB</span>
+          <span class="brand-by">by Xpanca</span>
+        </a>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-controls="navMenu"
+          aria-expanded="false"
+          aria-label="Buka menu"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="nav-menu" id="navMenu">
+          <ul class="nav-links">
+            <li><a href="#cara-kerja">Cara Kerja</a></li>
+            <li><a href="#modul">Modul</a></li>
+            <li><a href="#produk">Produk</a></li>
+            <li><a href="#harga">Harga</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+          <div class="nav-actions">
+            <a class="btn btn-outline nav-cta" href="#demo">Minta Demo</a>
+            <a class="btn btn-primary nav-cta" href="/daftar.html">Daftar</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="konten">
+      <!-- ===================== HERO ===================== -->
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow"><i class="bi bi-lightning-charge-fill"></i> ERP ringkas untuk bisnis yang sedang tumbuh</span>
+            <h1>Penjualan, stok, dan keuangan dalam <span class="hl">satu alur</span>.</h1>
+            <p class="hero-lead">
+              Setiap transaksi di HUB otomatis memperbarui stok gudang dan jurnal akuntansi.
+              Laporan laba rugi dan neraca selalu siap — tanpa input ganda, tanpa rekap manual
+              di akhir bulan.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#demo"><i class="bi bi-calendar-check"></i> Jadwalkan Demo Gratis</a>
+              <a class="btn btn-outline" href="/daftar.html"><i class="bi bi-rocket-takeoff"></i> Daftar Berlangganan</a>
+            </div>
+            <ul class="hero-points">
+              <li><i class="bi bi-check-circle-fill"></i>Multi-gudang</li>
+              <li><i class="bi bi-check-circle-fill"></i>Akuntansi otomatis</li>
+              <li><i class="bi bi-check-circle-fill"></i>Aplikasi kasir Android</li>
+              <li><i class="bi bi-check-circle-fill"></i>Berbasis web</li>
+            </ul>
+          </div>
+
+          <!-- Ilustrasi (bukan tangkapan layar): satu transaksi → tiga catatan. -->
+          <div class="hero-visual" aria-hidden="true">
+            <div class="flow-card">
+              <div class="flow-head">
+                <span class="flow-title">Transaksi baru</span>
+                <span class="dots"><span></span><span></span><span></span></span>
+              </div>
+              <div class="trx">
+                <span class="trx-ic"><i class="bi bi-receipt"></i></span>
+                <div>
+                  <div class="trx-meta">Penjualan · Gudang Utama</div>
+                  <div class="trx-main">SO-0142 · Toko Sumber Rejeki</div>
+                </div>
+                <span class="trx-amt">Rp 4.250.000</span>
+              </div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down-circle-fill"></i> HUB mencatat otomatis</div>
+              <div class="outputs">
+                <div class="out">
+                  <span class="out-ic blue"><i class="bi bi-box-seam"></i></span>
+                  <div>
+                    <div class="out-t">Kartu Stok</div>
+                    <div class="out-d">Beras Premium 5 kg <b>−24 pcs</b> · HPP diperbarui</div>
+                  </div>
+                  <span class="out-badge">Tercatat</span>
+                </div>
+                <div class="out">
+                  <span class="out-ic orange"><i class="bi bi-journal-check"></i></span>
+                  <div>
+                    <div class="out-t">Jurnal Akuntansi</div>
+                    <div class="out-d">Piutang <b>D 4.250.000</b> · Penjualan <b>K 4.250.000</b></div>
+                  </div>
+                  <span class="out-badge">Seimbang</span>
+                </div>
+                <div class="out">
+                  <span class="out-ic green"><i class="bi bi-graph-up-arrow"></i></span>
+                  <div>
+                    <div class="out-t">Laporan</div>
+                    <div class="out-d">Laba Rugi, Neraca &amp; Buku Besar ikut terbarui</div>
+                  </div>
+                  <span class="out-badge">Siap</span>
+                </div>
+              </div>
+              <div class="flow-foot"><i class="bi bi-shield-check"></i> Dokumen, stok, dan jurnal disimpan dalam satu transaksi — tidak ada yang tercatat setengah.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== CARA KERJA ===================== -->
+      <section class="section" id="cara-kerja">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="kicker">Cara kerja</span>
+            <h2>Satu transaksi, tiga catatan — sekaligus</h2>
+            <p>
+              Tim Anda cukup mencatat kegiatan sehari-hari. HUB yang memastikan stok dan
+              pembukuan selalu cocok.
+            </p>
+          </div>
+
+          <div class="steps">
+            <article class="step reveal">
+              <span class="step-no">01 · INPUT</span>
+              <h3>Catat transaksi seperti biasa</h3>
+              <p>Penjualan, pembelian, pengiriman, produksi, atau stok opname — dari web maupun aplikasi kasir.</p>
+              <ul>
+                <li><span class="chip">Pesanan Penjualan</span></li>
+                <li><span class="chip">Penerimaan Barang</span></li>
+                <li><span class="chip">Produksi</span></li>
+              </ul>
+            </article>
+            <article class="step reveal">
+              <span class="step-no">02 · OTOMATIS</span>
+              <h3>Stok &amp; jurnal ikut tercatat</h3>
+              <p>
+                Dokumen, kartu stok, dan jurnal berpasangan disimpan dalam satu langkah. Bila ada
+                yang gagal, semuanya dibatalkan — data tidak pernah setengah jadi.
+              </p>
+              <ul>
+                <li><span class="chip">Kartu Stok</span></li>
+                <li><span class="chip">Jurnal Debit = Kredit</span></li>
+              </ul>
+            </article>
+            <article class="step reveal">
+              <span class="step-no">03 · LAPORAN</span>
+              <h3>Laporan langsung siap dibaca</h3>
+              <p>Laba rugi, neraca, buku besar, dan laporan stok terbarui saat itu juga — tanpa rekap ulang di Excel.</p>
+              <ul>
+                <li><span class="chip">Laba Rugi</span></li>
+                <li><span class="chip">Neraca</span></li>
+                <li><span class="chip">Buku Besar</span></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== MODUL ===================== -->
+      <section class="section section-soft" id="modul">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="kicker">Modul lengkap</span>
+            <h2>Semua yang dibutuhkan operasional bisnis Anda</h2>
+            <p>Mulai dari pesanan pelanggan sampai laporan keuangan, dalam satu sistem yang saling terhubung.</p>
+          </div>
+
+          <div class="modules">
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-cart-check"></i></div>
+              <h3>Penjualan</h3>
+              <ul>
+                <li>Penjualan tunai &amp; pesanan (SO)</li>
+                <li>Pengiriman &amp; kurir</li>
+                <li>Penagihan, cicilan &amp; retur</li>
+                <li>Grup harga per pelanggan</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-bag"></i></div>
+              <h3>Pembelian</h3>
+              <ul>
+                <li>Permintaan &amp; pesanan pembelian (PO)</li>
+                <li>Penerimaan barang</li>
+                <li>Retur pembelian</li>
+                <li>Pembayaran ke pemasok</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-boxes"></i></div>
+              <h3>Stok &amp; Gudang</h3>
+              <ul>
+                <li>Multi-gudang &amp; mutasi antar-gudang</li>
+                <li>Kartu stok dengan saldo berjalan</li>
+                <li>Stok opname</li>
+                <li>Konversi satuan</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-gear-wide-connected"></i></div>
+              <h3>Produksi</h3>
+              <ul>
+                <li>Rakit produk (bundling)</li>
+                <li>Produksi dengan bahan baku</li>
+                <li>HPP dihitung otomatis</li>
+                <li>Varian warna &amp; ukuran</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-calculator"></i></div>
+              <h3>Akuntansi</h3>
+              <ul>
+                <li>Daftar &amp; pemetaan akun</li>
+                <li>Kas &amp; bank, biaya</li>
+                <li>Jurnal umum &amp; buku besar</li>
+                <li>Laba rugi &amp; neraca</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-building"></i></div>
+              <h3>Aset Tetap</h3>
+              <ul>
+                <li>Daftar aset</li>
+                <li>Penyusutan otomatis</li>
+                <li>Akun per aset</li>
+                <li>Pelepasan aset</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-bar-chart-line"></i></div>
+              <h3>Laporan</h3>
+              <ul>
+                <li>Pembuat laporan</li>
+                <li>Penjualan per varian</li>
+                <li>Barang masuk &amp; keluar</li>
+                <li>Ekspor Excel &amp; PDF</li>
+              </ul>
+            </article>
+            <article class="module reveal">
+              <div class="module-ic"><i class="bi bi-people"></i></div>
+              <h3>Pengaturan</h3>
+              <ul>
+                <li>Profil &amp; kop perusahaan</li>
+                <li>User, peran &amp; hak akses</li>
+                <li>Audit trail</li>
+                <li>Partner API</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== PRODUK ===================== -->
+      <section class="section" id="produk">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="kicker">Ekosistem HUB</span>
+            <h2>Satu data untuk kasir, toko online, dan sistem lain</h2>
+            <p>Semua saluran penjualan terhubung ke HUB, sehingga stok dan pembukuan tetap satu sumber.</p>
+          </div>
+
+          <div class="products">
+            <article class="product reveal">
+              <div class="product-top">
+                <i class="bi bi-phone"></i>
+                <h3>HUB POS</h3>
+                <p>Aplikasi kasir Android untuk toko &amp; tim lapangan.</p>
+              </div>
+              <div class="product-body">
+                <ul class="checks">
+                  <li><i class="bi bi-check2"></i>Katalog produk &amp; harga dari HUB</li>
+                  <li><i class="bi bi-check2"></i>Bayar tunai, transfer, sebagian, atau cicilan</li>
+                  <li><i class="bi bi-check2"></i>Cetak struk ke printer Bluetooth</li>
+                  <li><i class="bi bi-check2"></i>Transaksi langsung masuk stok &amp; jurnal</li>
+                </ul>
+              </div>
+            </article>
+            <article class="product reveal">
+              <div class="product-top">
+                <i class="bi bi-shop"></i>
+                <h3>HUB Commerce</h3>
+                <p>Toko online yang terhubung dengan stok Anda.</p>
+              </div>
+              <div class="product-body">
+                <ul class="checks">
+                  <li><i class="bi bi-check2"></i>Katalog &amp; stok tersinkron dari HUB</li>
+                  <li><i class="bi bi-check2"></i>Pembayaran QRIS, Virtual Account &amp; e-wallet</li>
+                  <li><i class="bi bi-check2"></i>Promo &amp; voucher</li>
+                  <li><i class="bi bi-check2"></i>Pesanan lunas otomatis tercatat di pembukuan</li>
+                </ul>
+              </div>
+            </article>
+            <article class="product reveal">
+              <div class="product-top">
+                <i class="bi bi-plug"></i>
+                <h3>Partner API</h3>
+                <p>Hubungkan HUB dengan aplikasi yang sudah Anda pakai.</p>
+              </div>
+              <div class="product-body">
+                <ul class="checks">
+                  <li><i class="bi bi-check2"></i>Tarik produk, pemasok, pelanggan &amp; gudang</li>
+                  <li><i class="bi bi-check2"></i>Kirim transaksi beli &amp; jual dari sistem lain</li>
+                  <li><i class="bi bi-check2"></i>Keamanan tanda tangan HMAC</li>
+                  <li><i class="bi bi-check2"></i>Dokumentasi API tersedia</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== KEUNGGULAN ===================== -->
+      <section class="section section-soft" id="keunggulan">
+        <div class="container why-grid">
+          <div class="why-intro reveal">
+            <span class="kicker">Kenapa HUB</span>
+            <h2>Data yang bisa dipercaya, bukan sekadar dicatat</h2>
+            <p>
+              HUB dibangun dengan prinsip akuntansi berpasangan. Setiap rupiah yang masuk dan keluar
+              punya pasangan jurnalnya, sehingga neraca selalu seimbang.
+            </p>
+            <div class="ledger" aria-label="Contoh jurnal pembelian tunai">
+              <div class="ledger-cap">Contoh: pembelian barang tunai</div>
+              <table>
+                <thead>
+                  <tr><th>Akun</th><th class="num">Debit</th><th class="num">Kredit</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Persediaan</td><td class="num">100.000</td><td class="num">—</td></tr>
+                  <tr><td>Kas / Bank</td><td class="num">—</td><td class="num">100.000</td></tr>
+                  <tr><td>Total</td><td class="num">100.000</td><td class="num">100.000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="features">
+            <div class="feature reveal">
+              <span class="feature-ic"><i class="bi bi-shield-lock"></i></span>
+              <div>
+                <h3>Anti stok minus</h3>
+                <p>Penjualan, pengiriman, dan mutasi ditolak bila melebihi stok tersedia di gudang asal.</p>
+              </div>
+            </div>
+            <div class="feature reveal">
+              <span class="feature-ic"><i class="bi bi-diagram-3"></i></span>
+              <div>
+                <h3>Pemetaan akun fleksibel</h3>
+                <p>Atur akun default sekali, lalu sesuaikan per produk, per aset, atau per pelanggan.</p>
+              </div>
+            </div>
+            <div class="feature reveal">
+              <span class="feature-ic"><i class="bi bi-person-check"></i></span>
+              <div>
+                <h3>Hak akses &amp; audit trail</h3>
+                <p>Atur siapa boleh melihat, menambah, mengubah, atau menghapus. Aktivitas penting terekam.</p>
+              </div>
+            </div>
+            <div class="feature reveal">
+              <span class="feature-ic"><i class="bi bi-wallet2"></i></span>
+              <div>
+                <h3>Saldo &amp; titipan pelanggan</h3>
+                <p>Kelebihan bayar jadi saldo pelanggan yang bisa dipakai sebagian untuk tagihan berikutnya.</p>
+              </div>
+            </div>
+            <div class="feature reveal">
+              <span class="feature-ic"><i class="bi bi-printer"></i></span>
+              <div>
+                <h3>Faktur siap cetak</h3>
+                <p>Faktur dan dokumen memakai kop perusahaan Anda, siap dicetak atau dikirim sebagai PDF.</p>
+              </div>
+            </div>
+            <div class="feature reveal">
+              <span class="feature-ic"><i class="bi bi-palette"></i></span>
+              <div>
+                <h3>Tampil dengan brand Anda</h3>
+                <p>Logo dan warna aplikasi disesuaikan dengan identitas perusahaan Anda.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== HARGA =====================
+           Kartu paket dirender paket.js dari assets/data/paket.json (sumber
+           tunggal harga, juga dibaca server). Jangan menulis harga di sini. -->
+      <section class="section" id="harga">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="kicker">Harga</span>
+            <h2>Paket yang tumbuh bersama bisnis Anda</h2>
+            <p>Mulai dari yang Anda butuhkan sekarang, naik paket kapan saja tanpa pindah sistem.</p>
+          </div>
+
+          <div class="pricing reveal" id="pricingCards">
+            <p class="pricing-loading">Memuat paket… <a href="/daftar.html">Lihat di halaman Daftar</a></p>
+          </div>
+          <p class="pricing-foot">Harga belum termasuk PPN. Butuh paket di antara itu? <a href="#demo">Ceritakan kebutuhan Anda</a>.</p>
+        </div>
+      </section>
+
+      <!-- ===================== FAQ ===================== -->
+      <section class="section section-soft" id="faq">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="kicker">FAQ</span>
+            <h2>Pertanyaan yang sering diajukan</h2>
+          </div>
+          <div class="faq">
+            <details class="reveal">
+              <summary>Apakah perlu memasang aplikasi di komputer?</summary>
+              <p>Tidak. HUB berbasis web, cukup dibuka dari browser di komputer kantor. Untuk kasir dan tim lapangan tersedia aplikasi HUB POS di Android.</p>
+            </details>
+            <details class="reveal">
+              <summary>Saya belum paham akuntansi. Apakah tetap bisa memakai HUB?</summary>
+              <p>Bisa. Tim Anda cukup mencatat penjualan, pembelian, dan stok seperti biasa. Jurnal akuntansinya dibuat otomatis oleh HUB berdasarkan pemetaan akun yang kami bantu siapkan di awal.</p>
+            </details>
+            <details class="reveal">
+              <summary>Bisakah data lama dari Excel dipindahkan ke HUB?</summary>
+              <p>Bisa. HUB menyediakan impor Excel untuk data seperti produk dan transaksi, sehingga Anda tidak perlu mengetik ulang dari nol.</p>
+            </details>
+            <details class="reveal">
+              <summary>Bagaimana jika saya punya beberapa gudang atau cabang?</summary>
+              <p>Stok di HUB dicatat per gudang. Anda bisa memindahkan barang antar-gudang, melihat kartu stok per gudang, dan menyaring laporan per gudang.</p>
+            </details>
+            <details class="reveal">
+              <summary>Apakah data perusahaan saya terpisah dari pelanggan lain?</summary>
+              <p>Ya. Data setiap perusahaan disimpan terpisah, dan akses tiap pengguna diatur lewat peran serta hak akses. Paket Enterprise bisa memakai server tersendiri.</p>
+            </details>
+            <details class="reveal">
+              <summary>Bisakah tampilan HUB memakai logo dan warna perusahaan kami?</summary>
+              <p>Bisa. Logo, warna, dan kop dokumen seperti faktur disesuaikan dengan identitas perusahaan Anda.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== KONTAK / DEMO ===================== -->
+      <section class="section contact" id="demo">
+        <div class="container contact-grid">
+          <div class="reveal">
+            <span class="kicker">Mulai sekarang</span>
+            <h2>Lihat HUB bekerja dengan alur bisnis Anda</h2>
+            <p class="contact-lead">Isi form, dan tim kami akan menghubungi Anda untuk menjadwalkan demo.</p>
+
+            <ol class="next-steps">
+              <li><span class="ns-no">1</span><div><b>Kami hubungi Anda</b>Lewat WhatsApp atau email untuk memahami kebutuhan bisnis Anda.</div></li>
+              <li><span class="ns-no">2</span><div><b>Demo langsung</b>Kami tunjukkan alur penjualan, stok, dan laporan yang relevan untuk Anda.</div></li>
+              <li><span class="ns-no">3</span><div><b>Setup &amp; pendampingan</b>Kami bantu siapkan akun, gudang, dan data awal Anda.</div></li>
+            </ol>
+
+            <!-- Diisi main.js dari assets/js/config.js; tautan yang kosong disembunyikan. -->
+            <div class="contact-links">
+              <a class="contact-link" id="linkWa" href="#" target="_blank" rel="noopener" hidden>
+                <i class="bi bi-whatsapp"></i>
+                <span>Chat WhatsApp<small data-contact="waLabel"></small></span>
+              </a>
+              <a class="contact-link" id="linkEmail" href="#" hidden>
+                <i class="bi bi-envelope"></i>
+                <span>Kirim email<small data-contact="email"></small></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="form-card reveal">
+            <h3>Minta Demo Gratis</h3>
+            <p>Tanpa biaya dan tanpa kewajiban berlangganan.</p>
+            <form id="demoForm" novalidate>
+              <div class="form-row">
+                <div class="field">
+                  <label for="fName">Nama</label>
+                  <input id="fName" name="name" type="text" autocomplete="name" required maxlength="100" />
+                  <div class="field-error" data-err="name"></div>
+                </div>
+                <div class="field">
+                  <label for="fCompany">Nama usaha <span class="opt">(opsional)</span></label>
+                  <input id="fCompany" name="company" type="text" autocomplete="organization" maxlength="150" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="fPhone">No. WhatsApp</label>
+                  <input id="fPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="08xx xxxx xxxx" maxlength="20" />
+                  <div class="field-error" data-err="phone"></div>
+                </div>
+                <div class="field">
+                  <label for="fEmail">Email <span class="opt">(opsional)</span></label>
+                  <input id="fEmail" name="email" type="email" autocomplete="email" maxlength="150" />
+                  <div class="field-error" data-err="email"></div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="fPackage">Paket yang diminati</label>
+                <select id="fPackage" name="package">
+                  <option value="">Belum tahu, bantu saya memilih</option>
+                  <option value="Starter">Starter</option>
+                  <option value="Bisnis">Bisnis</option>
+                  <option value="Enterprise">Enterprise</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fMessage">Ceritakan bisnis Anda <span class="opt">(opsional)</span></label>
+                <textarea id="fMessage" name="message" maxlength="2000" placeholder="Mis. distributor sembako, 2 gudang, 6 orang tim penjualan"></textarea>
+              </div>
+              <!-- Honeypot anti-bot: disembunyikan dari manusia. -->
+              <div class="hp" aria-hidden="true">
+                <label for="fWebsite">Website</label>
+                <input id="fWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+              <button class="btn btn-primary btn-block" type="submit" id="demoSubmit">
+                <i class="bi bi-send"></i> Kirim Permintaan Demo
+              </button>
+              <div class="form-status" id="demoStatus" role="status" aria-live="polite"></div>
+              <p class="form-privacy">Data Anda hanya dipakai untuk menghubungi Anda terkait demo HUB.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a class="brand" href="#">
+              <img src="/assets/images/logo.png" alt="" width="38" height="38" />
+              <span class="brand-name">HUB</span>
+              <span class="brand-by">by Xpanca</span>
+            </a>
+            <p>Solusi terintegrasi penjualan, stok, dan keuangan untuk bisnis yang sedang tumbuh.</p>
+          </div>
+          <div>
+            <h4>Produk</h4>
+            <ul>
+              <li><a href="#modul">Modul HUB</a></li>
+              <li><a href="#produk">HUB POS</a></li>
+              <li><a href="#produk">HUB Commerce</a></li>
+              <li><a href="#produk">Partner API</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Perusahaan</h4>
+            <ul>
+              <li><a href="#harga">Harga</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="/daftar.html">Daftar berlangganan</a></li>
+              <li><a href="#demo">Minta demo</a></li>
+              <li><a href="#" data-contact-href="email" hidden>Email kami</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; <span id="year">2026</span> Xpanca. Hak cipta dilindungi.</span>
+          <span>HUB — Solusi Terintegrasi Penjualan, Stok, &amp; Keuangan</span>
+        </div>
+      </div>
+    </footer>
+
+    <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Chat WhatsApp" hidden>
+      <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <script src="/assets/js/config.js?v=20261022-3"></script>
+    <script src="/assets/js/paket.js?v=20261022-3"></script>
+    <script src="/assets/js/main.js?v=20261022-3"></script>
+  </body>
+</html>

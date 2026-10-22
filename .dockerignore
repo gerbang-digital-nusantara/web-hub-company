@@ -1,0 +1,7 @@
+.git
+.env
+.env.*
+/data/
+*.log
+web-hub-company
+web-hub-company.exe

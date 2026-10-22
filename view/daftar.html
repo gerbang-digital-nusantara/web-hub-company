@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Daftar Berlangganan — HUB by Xpanca</title>
+    <meta
+      name="description"
+      content="Daftar berlangganan HUB: pilih paket, isi data usaha, dan tim kami menyiapkan aplikasi penjualan, stok, dan keuangan untuk bisnis Anda."
+    />
+    <meta name="theme-color" content="#1f3a68" />
+    <link rel="icon" type="image/png" href="/assets/images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261022-3" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#konten">Lewati ke konten</a>
+
+    <!-- Header = salinan header beranda, tautannya diarahkan ke /#bagian. -->
+    <header class="site-header" id="header">
+      <nav class="container nav" aria-label="Navigasi utama">
+        <a class="brand" href="/" aria-label="HUB by Xpanca — beranda">
+          <img src="/assets/images/logo.png" alt="" width="38" height="38" />
+          <span class="brand-name">HUB</span>
+          <span class="brand-by">by Xpanca</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-controls="navMenu" aria-expanded="false" aria-label="Buka menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="nav-menu" id="navMenu">
+          <ul class="nav-links">
+            <li><a href="/#cara-kerja">Cara Kerja</a></li>
+            <li><a href="/#modul">Modul</a></li>
+            <li><a href="/#produk">Produk</a></li>
+            <li><a href="/#harga">Harga</a></li>
+            <li><a href="/#faq">FAQ</a></li>
+          </ul>
+          <div class="nav-actions">
+            <a class="btn btn-outline nav-cta" href="/#demo">Minta Demo</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="konten">
+      <section class="page-head">
+        <div class="container">
+          <div class="crumbs"><a href="/">Beranda</a> / Daftar Berlangganan</div>
+          <h1>Daftar Berlangganan HUB</h1>
+          <p>Pilih paket dan isi data usaha Anda. Tim kami memverifikasi pendaftaran, mengirim tagihan pertama, lalu menyiapkan aplikasi HUB untuk bisnis Anda.</p>
+          <ol class="steps-mini">
+            <li><span>1</span>Isi pendaftaran</li>
+            <li><span>2</span>Verifikasi &amp; tagihan</li>
+            <li><span>3</span>Aktivasi &amp; pendampingan</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="daftar">
+        <div class="container">
+          <form id="daftarForm" class="daftar-grid" novalidate>
+            <div>
+              <!-- 1. Paket -->
+              <div class="panel">
+                <h2 class="panel-title"><span class="panel-no">1</span>Pilih paket</h2>
+                <p class="panel-sub">Bisa naik paket kapan saja tanpa pindah sistem.</p>
+                <!-- Diisi daftar.js dari assets/data/paket.json. -->
+                <div class="plan-pick" id="planPick" role="radiogroup" aria-label="Paket">
+                  <p class="hint">Memuat paket…</p>
+                </div>
+                <div class="field-error" data-err="paket"></div>
+
+                <div id="periodeWrap">
+                  <div class="field" style="margin-bottom: 0">
+                    <label>Periode pembayaran</label>
+                    <div class="seg" role="radiogroup" aria-label="Periode pembayaran">
+                      <label><input type="radio" name="periode" value="bulanan" /><span>Bulanan</span></label>
+                      <label><input type="radio" name="periode" value="tahunan" checked /><span>Tahunan <small id="hematBadge" hidden></small></span></label>
+                    </div>
+                    <div class="field-error" data-err="periode"></div>
+                    <p class="periode-info" id="periodeInfo"></p>
+                  </div>
+                </div>
+                <p class="periode-info" id="penawaranInfo" hidden>
+                  Paket ini memakai penawaran khusus. Tim kami akan menghubungi Anda untuk menghitung kebutuhan dan harga.
+                </p>
+              </div>
+
+              <!-- 2. Data usaha -->
+              <div class="panel">
+                <h2 class="panel-title"><span class="panel-no">2</span>Data usaha</h2>
+                <p class="panel-sub">Dipakai untuk menyiapkan aplikasi dan kop dokumen (faktur, surat jalan).</p>
+
+                <div class="form-row">
+                  <div class="field">
+                    <label for="fNamaUsaha">Nama usaha / perusahaan</label>
+                    <input id="fNamaUsaha" name="nama_usaha" type="text" autocomplete="organization" maxlength="150" required />
+                    <div class="field-error" data-err="nama_usaha"></div>
+                  </div>
+                  <div class="field">
+                    <label for="fJenis">Jenis usaha</label>
+                    <select id="fJenis" name="jenis_usaha">
+                      <option value="">Pilih jenis usaha</option>
+                      <option>Distributor / grosir</option>
+                      <option>Toko / ritel</option>
+                      <option>Manufaktur / produksi</option>
+                      <option>Agen / sub-distributor</option>
+                      <option>Jasa</option>
+                      <option>Lainnya</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row-3">
+                  <div class="field">
+                    <label for="fGudang">Jumlah gudang</label>
+                    <input id="fGudang" name="jumlah_gudang" type="number" min="0" max="10000" inputmode="numeric" placeholder="1" />
+                    <div class="field-error" data-err="jumlah_gudang"></div>
+                  </div>
+                  <div class="field">
+                    <label for="fPengguna">Jumlah pengguna</label>
+                    <input id="fPengguna" name="jumlah_pengguna" type="number" min="0" max="10000" inputmode="numeric" placeholder="3" />
+                    <div class="field-error" data-err="jumlah_pengguna"></div>
+                  </div>
+                  <div class="field">
+                    <label for="fKota">Kota</label>
+                    <input id="fKota" name="kota" type="text" autocomplete="address-level2" maxlength="80" required />
+                    <div class="field-error" data-err="kota"></div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="fAlamat">Alamat usaha <span class="opt">(opsional)</span></label>
+                  <textarea id="fAlamat" name="alamat" rows="2" maxlength="500" autocomplete="street-address" style="min-height: 64px"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="field">
+                    <label for="fNpwp">NPWP <span class="opt">(opsional)</span></label>
+                    <input id="fNpwp" name="npwp" type="text" inputmode="numeric" maxlength="22" placeholder="15 atau 16 digit" />
+                    <div class="field-error" data-err="npwp"></div>
+                    <div class="hint">Diperlukan bila Anda membutuhkan faktur pajak.</div>
+                  </div>
+                  <div class="field">
+                    <label for="fSub">Usulan alamat aplikasi <span class="opt">(opsional)</span></label>
+                    <div class="input-affix">
+                      <input id="fSub" name="subdomain" type="text" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="namausaha" />
+                      <span class="affix">.hub.xpanca.com</span>
+                    </div>
+                    <div class="field-error" data-err="subdomain"></div>
+                    <div class="hint">Alamat akhir dikonfirmasi tim kami.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Penanggung jawab -->
+              <div class="panel">
+                <h2 class="panel-title"><span class="panel-no">3</span>Penanggung jawab</h2>
+                <p class="panel-sub">Kami hubungi orang ini untuk verifikasi. Emailnya dipakai untuk akun admin pertama dan tagihan.</p>
+
+                <div class="form-row">
+                  <div class="field">
+                    <label for="fPic">Nama lengkap</label>
+                    <input id="fPic" name="nama_pic" type="text" autocomplete="name" maxlength="100" required />
+                    <div class="field-error" data-err="nama_pic"></div>
+                  </div>
+                  <div class="field">
+                    <label for="fJabatan">Jabatan <span class="opt">(opsional)</span></label>
+                    <input id="fJabatan" name="jabatan" type="text" autocomplete="organization-title" maxlength="80" placeholder="Pemilik, manajer keuangan, …" />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="field">
+                    <label for="fPhone">No. WhatsApp</label>
+                    <input id="fPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="08xx xxxx xxxx" required />
+                    <div class="field-error" data-err="phone"></div>
+                  </div>
+                  <div class="field">
+                    <label for="fEmail">Email</label>
+                    <input id="fEmail" name="email" type="email" autocomplete="email" maxlength="150" required />
+                    <div class="field-error" data-err="email"></div>
+                  </div>
+                </div>
+                <div class="field" style="margin-bottom: 0">
+                  <label for="fCatatan">Catatan <span class="opt">(opsional)</span></label>
+                  <textarea id="fCatatan" name="catatan" maxlength="2000" placeholder="Mis. ingin mulai bulan depan, sudah pakai Excel untuk stok, perlu aplikasi kasir untuk 3 toko"></textarea>
+                </div>
+              </div>
+
+              <!-- Honeypot anti-bot: disembunyikan dari manusia. -->
+              <div class="hp" aria-hidden="true">
+                <label for="fWebsite">Website</label>
+                <input id="fWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+            </div>
+
+            <!-- Ringkasan -->
+            <aside class="summary" aria-label="Ringkasan pendaftaran">
+              <div class="panel">
+                <h3>Ringkasan</h3>
+                <div class="sum-row"><span>Paket</span><b id="sumPaket">—</b></div>
+                <div class="sum-row" id="sumPeriodeRow"><span>Periode</span><b id="sumPeriode">—</b></div>
+                <div class="sum-total"><span id="sumLabel">Tagihan pertama</span><b id="sumTotal">—</b></div>
+                <p class="sum-note" id="sumNote">Belum termasuk PPN. Tagihan dikirim setelah pendaftaran diverifikasi.</p>
+                <ul class="checks sum-fitur" id="sumFitur"></ul>
+              </div>
+              <div class="panel">
+                <label class="agree">
+                  <input type="checkbox" name="setuju" id="fSetuju" />
+                  <span>Saya menyatakan data di atas benar dan bersedia dihubungi tim HUB untuk proses verifikasi dan penagihan.</span>
+                </label>
+                <div class="field-error" data-err="setuju"></div>
+                <button class="btn btn-primary btn-block" type="submit" id="daftarSubmit" style="margin-top: 16px">
+                  <i class="bi bi-rocket-takeoff"></i> Kirim Pendaftaran
+                </button>
+                <div class="form-status" id="daftarStatus" role="status" aria-live="polite"></div>
+                <p class="form-privacy">Belum ada pembayaran di tahap ini.</p>
+              </div>
+              <div class="sum-help">
+                <i class="bi bi-question-circle"></i>
+                <span>Ragu memilih paket? <a href="/#demo">Minta demo dulu</a> — gratis, tanpa kewajiban berlangganan.</span>
+              </div>
+            </aside>
+          </form>
+
+          <!-- Ditampilkan daftar.js setelah pendaftaran berhasil. -->
+          <div class="done" id="daftarDone" hidden tabindex="-1">
+            <div class="done-ic"><i class="bi bi-check-lg"></i></div>
+            <h2>Pendaftaran diterima</h2>
+            <p>Terima kasih, <b id="doneUsaha"></b>. Simpan nomor pendaftaran ini untuk menghubungi kami:</p>
+            <div class="done-code">
+              <span id="doneKode"></span>
+              <button type="button" id="doneCopy" title="Salin nomor pendaftaran" aria-label="Salin nomor pendaftaran"><i class="bi bi-copy"></i></button>
+            </div>
+            <ol class="next-steps">
+              <li><span class="ns-no">1</span><div><b>Verifikasi</b>Tim kami menghubungi Anda lewat WhatsApp untuk mengonfirmasi data pendaftaran.</div></li>
+              <li><span class="ns-no">2</span><div><b id="doneStep2Judul">Tagihan pertama</b><span id="doneStep2"></span></div></li>
+              <li><span class="ns-no">3</span><div><b>Aktivasi &amp; pendampingan</b>Kami siapkan aplikasi HUB, akun admin, gudang, dan data awal Anda.</div></li>
+            </ol>
+            <div class="done-actions">
+              <a class="btn btn-outline" href="/">Kembali ke beranda</a>
+              <a class="btn btn-primary" id="doneWa" href="#" target="_blank" rel="noopener" hidden><i class="bi bi-whatsapp"></i> Konfirmasi via WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-bottom" style="padding-top: 0">
+          <span>&copy; <span id="year">2026</span> Xpanca. Hak cipta dilindungi.</span>
+          <span><a href="/">Beranda</a> · <a href="/#harga">Harga</a> · <a href="/#faq">FAQ</a> · <a href="/#demo">Minta demo</a></span>
+        </div>
+      </div>
+    </footer>
+
+    <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Chat WhatsApp" hidden>
+      <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <script src="/assets/js/config.js?v=20261022-3"></script>
+    <script src="/assets/js/paket.js?v=20261022-3"></script>
+    <script src="/assets/js/main.js?v=20261022-3"></script>
+    <script src="/assets/js/daftar.js?v=20261022-3"></script>
+  </body>
+</html>

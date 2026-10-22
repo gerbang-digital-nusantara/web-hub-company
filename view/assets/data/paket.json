@@ -1,0 +1,45 @@
+{
+  "_catatan": "SATU-SATUNYA sumber paket & harga (kartu Harga di beranda, halaman Daftar, dan validasi server). Harga dalam rupiah per bulan, belum PPN. harga_bulanan 0 = lewat penawaran. Bayar tahunan = harga_bulanan x (12 - diskon_tahunan_bulan). ANGKA MASIH CONTOH - ganti dengan paket resmi.",
+  "diskon_tahunan_bulan": 2,
+  "paket": [
+    {
+      "id": "starter",
+      "nama": "Starter",
+      "untuk": "Untuk toko & usaha yang baru mulai tertata",
+      "harga_bulanan": 299000,
+      "fitur": [
+        "1 gudang",
+        "Hingga 3 pengguna",
+        "Penjualan, pembelian & stok",
+        "Akuntansi & laporan keuangan"
+      ]
+    },
+    {
+      "id": "bisnis",
+      "nama": "Bisnis",
+      "untuk": "Untuk distributor & grosir multi-gudang",
+      "harga_bulanan": 799000,
+      "rekomendasi": true,
+      "fitur": [
+        "Hingga 5 gudang",
+        "Hingga 15 pengguna",
+        "Semua fitur Starter",
+        "Aplikasi kasir HUB POS",
+        "Produksi, rakit produk & aset tetap"
+      ]
+    },
+    {
+      "id": "enterprise",
+      "nama": "Enterprise",
+      "untuk": "Untuk perusahaan dengan kebutuhan khusus",
+      "harga_bulanan": 0,
+      "fitur": [
+        "Gudang & pengguna sesuai kebutuhan",
+        "Semua fitur Bisnis",
+        "HUB Commerce & Partner API",
+        "Database & server terpisah",
+        "Tampilan dengan brand Anda"
+      ]
+    }
+  ]
+}

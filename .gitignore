@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+
+# Permintaan demo yang masuk (berisi data pribadi pengunjung) — jangan di-commit.
+/data/
+
+logs/
+*.log
+
+# biner hasil build
+web-hub-company
+web-hub-company.exe
+main
+
+.DS_Store
