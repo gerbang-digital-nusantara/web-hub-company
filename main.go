@@ -121,7 +121,7 @@ type stores struct {
 	daftar *jsonlStore
 }
 
-func buildApp(webRoot string, st stores) *fiber.App {
+func buildApp(webRoot string, st stores, hc *hubControl) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName:   "web-hub-company",
 		BodyLimit: 64 * 1024,
@@ -156,7 +156,8 @@ func buildApp(webRoot string, st stores) *fiber.App {
 	})
 
 	paketPath := filepath.Join(webRoot, "assets", "data", "paket.json")
-	app.Post("/api/demo", perMinute(5), demoHandler(st.demo))
+	app.Post("/api/demo", perMinute(5), demoHandler(st.demo, hc))
+	app.Get("/api/demo/subdomain", perMinute(30), subdomainHandler(hc))
 	app.Post("/api/daftar", perMinute(5), daftarHandler(st.daftar, paketPath))
 
 	// URL rapi tanpa .html: /daftar → daftar.html.
@@ -201,8 +202,15 @@ func main() {
 		daftar: &jsonlStore{path: filepath.Join(dataDir, "pendaftaran.jsonl")},
 	}
 
+	hc := newHubControl()
+	if hc == nil {
+		log.Printf("[web-hub-company] HUBCTL_API_KEY/SECRET kosong: form demo hanya dicatat ke jsonl")
+	} else {
+		log.Printf("[web-hub-company] form demo diteruskan ke hub-control %s (key %s)", hc.baseURL, hc.key)
+	}
+
 	port := getenv("PORT", "3110")
-	app := buildApp(webRoot, st)
+	app := buildApp(webRoot, st, hc)
 	log.Printf("[web-hub-company] serving %s on :%s", webRoot, port)
 	if err := app.Listen(fmt.Sprintf(":%s", port)); err != nil {
 		log.Fatal(err)

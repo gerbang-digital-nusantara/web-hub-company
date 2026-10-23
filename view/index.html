@@ -30,7 +30,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <!-- ?v= = cache-buster: aset di-cache 1 hari (main.go), naikkan saat CSS/JS diubah. -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261023-1" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261023-2" />
   </head>
 
   <body>
@@ -500,7 +500,7 @@
 
           <div class="form-card reveal">
             <h3>Minta Demo Gratis</h3>
-            <p>Tanpa biaya dan tanpa kewajiban berlangganan.</p>
+            <p>Tanpa biaya dan tanpa kewajiban berlangganan. Akun coba gratis Anda aktif setelah disetujui tim kami.</p>
             <form id="demoForm" novalidate>
               <div class="form-row">
                 <div class="field">
@@ -509,8 +509,9 @@
                   <div class="field-error" data-err="name"></div>
                 </div>
                 <div class="field">
-                  <label for="fCompany">Nama usaha <span class="opt">(opsional)</span></label>
-                  <input id="fCompany" name="company" type="text" autocomplete="organization" maxlength="150" />
+                  <label for="fCompany">Nama usaha</label>
+                  <input id="fCompany" name="company" type="text" autocomplete="organization" required maxlength="150" />
+                  <div class="field-error" data-err="company"></div>
                 </div>
               </div>
               <div class="form-row">
@@ -520,10 +521,20 @@
                   <div class="field-error" data-err="phone"></div>
                 </div>
                 <div class="field">
-                  <label for="fEmail">Email <span class="opt">(opsional)</span></label>
-                  <input id="fEmail" name="email" type="email" autocomplete="email" maxlength="150" />
+                  <label for="fEmail">Email</label>
+                  <input id="fEmail" name="email" type="email" autocomplete="email" required maxlength="150" />
                   <div class="field-error" data-err="email"></div>
                 </div>
+              </div>
+              <!-- Diteruskan ke hub-control (Partner API) sebagai tenant coba gratis. -->
+              <div class="field">
+                <label for="fSub">Alamat aplikasi Anda <span class="opt">(opsional)</span></label>
+                <div class="input-affix">
+                  <input id="fSub" name="subdomain" type="text" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="namausaha" />
+                  <span class="affix">.hub.xpanca.com</span>
+                </div>
+                <div class="field-error" data-err="subdomain"></div>
+                <div class="hint" id="subHint">Kosongkan bila ingin dibuat otomatis dari nama usaha.</div>
               </div>
               <div class="field">
                 <label for="fPackage">Paket yang diminati</label>
@@ -597,8 +608,8 @@
       <i class="bi bi-whatsapp"></i>
     </a>
 
-    <script src="assets/js/config.js?v=20261023-1"></script>
-    <script src="assets/js/paket.js?v=20261023-1"></script>
-    <script src="assets/js/main.js?v=20261023-1"></script>
+    <script src="assets/js/config.js?v=20261023-2"></script>
+    <script src="assets/js/paket.js?v=20261023-2"></script>
+    <script src="assets/js/main.js?v=20261023-2"></script>
   </body>
 </html>

@@ -1447,6 +1447,12 @@ p {
   color: var(--ink-3);
   margin-top: 4px;
 }
+.hint.ok {
+  color: #0f6b46;
+}
+.hint.bad {
+  color: #a62626;
+}
 .form-row-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

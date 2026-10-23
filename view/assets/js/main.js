@@ -148,15 +148,58 @@
     status.textContent = msg;
   };
 
-  // Validasi sisi klien = cermin aturan main.go (server tetap memeriksa ulang).
+  // Validasi sisi klien = cermin aturan demo.go (server tetap memeriksa ulang).
+  // Nama usaha & email wajib karena pendaftar diteruskan ke hub-control
+  // sebagai tenant coba gratis.
+  const reSub = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
   const validate = (d) => {
     const e = {};
     if (!d.name) e.name = "Nama wajib diisi";
+    if (!d.company) e.company = "Nama usaha wajib diisi";
     if (!d.phone && !d.email) e.phone = "Isi nomor WhatsApp atau email";
     if (d.phone && !/^[0-9+\-\s()]{8,20}$/.test(d.phone)) e.phone = "Nomor WhatsApp tidak valid";
-    if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) e.email = "Email tidak valid";
+    if (!d.email) e.email = "Email wajib diisi";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) e.email = "Email tidak valid";
+    if (d.subdomain && !reSub.test(d.subdomain)) e.subdomain = "3–30 karakter: huruf kecil, angka, atau tanda hubung";
     return e;
   };
+
+  /* Cek ketersediaan alamat {subdomain}.hub.xpanca.com sambil mengetik
+   * (GET api/demo/subdomain → hub-control). Hanya petunjuk, bukan reservasi. */
+  const sub = $("#fSub");
+  const subHint = $("#subHint");
+  const subHintAwal = subHint?.textContent || "";
+  const setSubHint = (kind, msg) => {
+    if (!subHint) return;
+    subHint.className = `hint${kind ? ` ${kind}` : ""}`;
+    subHint.textContent = msg;
+  };
+  let subTimer = 0;
+  let subSeq = 0;
+  sub?.addEventListener("input", () => {
+    // Ketik bebas → paksa huruf kecil, buang karakter yang tak diizinkan.
+    const v = sub.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (v !== sub.value) sub.value = v;
+    clearTimeout(subTimer);
+    const seq = ++subSeq;
+    if (!v) return setSubHint("", subHintAwal);
+    if (!reSub.test(v)) return setSubHint("bad", "3–30 karakter: huruf kecil, angka, atau tanda hubung");
+    if (window.HUB_PREVIEW) return setSubHint("", `Alamat: ${v}.hub.xpanca.com`);
+    setSubHint("", "Memeriksa…");
+    subTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`api/demo/subdomain?name=${encodeURIComponent(v)}`);
+        const json = await res.json().catch(() => ({}));
+        if (seq !== subSeq) return; // sudah diketik ulang
+        const d = json.data;
+        if (!res.ok || !d) return setSubHint("", subHintAwal);
+        if (d.available) setSubHint("ok", `✓ ${d.domain || `${v}.hub.xpanca.com`} tersedia`);
+        else setSubHint("bad", d.reason || "Alamat ini sudah dipakai, coba yang lain");
+      } catch (e) {
+        if (seq === subSeq) setSubHint("", subHintAwal);
+      }
+    }, 450);
+  });
 
   form.addEventListener("submit", async (ev) => {
     ev.preventDefault();
@@ -191,7 +234,14 @@
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.status) {
         form.reset();
-        setStatus("ok", json.message || "Terima kasih, tim kami akan segera menghubungi Anda.");
+        setSubHint("", subHintAwal);
+        // Bila tercatat di hub-control, tampilkan alamat aplikasinya.
+        const dom = json.data?.domain || (json.data?.slug ? `${json.data.slug}.hub.xpanca.com` : "");
+        setStatus(
+          "ok",
+          (json.message || "Terima kasih, tim kami akan segera menghubungi Anda.") +
+            (dom ? ` Alamat aplikasi Anda: ${dom}` : ""),
+        );
       } else {
         if (json.errors) showErrors(json.errors);
         setStatus("err", json.message || "Gagal mengirim. Silakan coba lagi.");
