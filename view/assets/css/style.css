@@ -1176,6 +1176,20 @@ p {
   }
 }
 
+/* Spanduk mode pratinjau (GitHub Pages, tanpa server). */
+.preview-bar {
+  background: #fff4d6;
+  color: #6b4e00;
+  border-bottom: 1px solid #f1dc9c;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px 16px;
+}
+.preview-bar i {
+  margin-right: 6px;
+}
+
 /* ===================== Tambahan beranda ===================== */
 
 .nav-actions {

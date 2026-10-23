@@ -8,7 +8,7 @@
 
   function load() {
     if (!cache) {
-      cache = fetch("/assets/data/paket.json", { cache: "no-cache" })
+      cache = fetch("assets/data/paket.json", { cache: "no-cache" })
         .then((r) => {
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           return r.json();
@@ -69,7 +69,7 @@
             <ul class="checks">
               ${(p.fitur || []).map((f) => `<li><i class="bi bi-check2"></i>${esc(f)}</li>`).join("")}
             </ul>
-            <a class="btn ${btnKelas} btn-block" href="/daftar.html?paket=${encodeURIComponent(p.id)}">${btnLabel}</a>
+            <a class="btn ${btnKelas} btn-block" href="daftar.html?paket=${encodeURIComponent(p.id)}">${btnLabel}</a>
           </article>`;
       })
       .join("");

@@ -68,6 +68,15 @@
   const year = $("#year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  // Spanduk mode pratinjau (GitHub Pages) — lihat HUB_PREVIEW di config.js.
+  if (window.HUB_PREVIEW) {
+    const bar = document.createElement("div");
+    bar.className = "preview-bar";
+    bar.innerHTML =
+      '<i class="bi bi-eye"></i> Versi pratinjau — form Demo &amp; Daftar bisa dicoba, tetapi tidak dikirim ke mana pun.';
+    document.body.prepend(bar);
+  }
+
   /* ===================== Muncul saat digulir ===================== */
 
   const reveals = $$(".reveal");
@@ -163,11 +172,18 @@
       return;
     }
 
+    if (window.HUB_PREVIEW) {
+      // Tanpa server: tampilkan hasil seolah terkirim, tanpa menyimpan apa pun.
+      form.reset();
+      setStatus("ok", "Pratinjau: form valid. Di situs asli, permintaan ini terkirim ke tim kami.");
+      return;
+    }
+
     const label = submit.innerHTML;
     submit.disabled = true;
     submit.innerHTML = '<i class="bi bi-hourglass-split"></i> Mengirim…';
     try {
-      const res = await fetch("/api/demo", {
+      const res = await fetch("api/demo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

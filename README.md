@@ -21,6 +21,20 @@ Docker:
 docker compose up -d --build
 ```
 
+## Pratinjau di GitHub Pages
+
+Push ke `main` menjalankan `.github/workflows/pages.yml`, yang mengunggah folder
+`view/` (statis saja) ke GitHub Pages:
+`https://gerbang-digital-nusantara.github.io/web-hub-company/`.
+
+- Sekali saja: **Settings → Pages → Source = GitHub Actions**.
+- Server Go tidak ikut, jadi di `*.github.io` mode **pratinjau** menyala otomatis
+  (`HUB_PREVIEW` di `config.js`): ada spanduk kuning, form Demo & Daftar bisa dicoba
+  sampai layar "diterima" tetapi **tidak dikirim/disimpan**.
+- Karena itu semua path di HTML/JS **relatif** (`assets/…`, `daftar.html`,
+  `api/…`), bukan `/assets/…` — situs Pages berada di sub-path `/web-hub-company/`.
+  `404.html` memakai `<base>` yang dihitung otomatis.
+
 ## Struktur
 
 ```

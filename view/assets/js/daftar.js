@@ -218,11 +218,31 @@
       return;
     }
 
+    if (window.HUB_PREVIEW) {
+      // Tanpa server (GitHub Pages): hasil dihitung di browser dari paket.json
+      // yang sama, supaya alur sampai layar "diterima" tetap bisa ditinjau.
+      const p = data.paket.find((x) => x.id === d.paket);
+      const tawar = P.penawaran(p);
+      tampilkanSelesai(
+        {
+          kode: "HUB-PRATINJAU",
+          paket: p.nama,
+          periode: tawar ? "" : d.periode,
+          estimasi: P.hitungTagihan(data, p, d.periode),
+          penawaran: tawar,
+          nama_usaha: d.nama_usaha,
+          email: d.email.toLowerCase(),
+        },
+        d,
+      );
+      return;
+    }
+
     const label = submit.innerHTML;
     submit.disabled = true;
     submit.innerHTML = '<i class="bi bi-hourglass-split"></i> Mengirim…';
     try {
-      const res = await fetch("/api/daftar", {
+      const res = await fetch("api/daftar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(d),

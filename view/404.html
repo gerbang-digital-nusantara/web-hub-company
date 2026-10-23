@@ -2,17 +2,27 @@
 <html lang="id">
   <head>
     <meta charset="utf-8" />
+    <!-- 404 bisa tampil di URL sedalam apa pun, jadi path relatif di bawah
+         diarahkan ke akar situs lewat <base>: "/" di server Go, dan
+         "/<nama-repo>/" di GitHub Pages (situs proyek). Harus sebelum <link>. -->
+    <script>
+      (function () {
+        var seg = location.pathname.split("/")[1];
+        var base = /\.github\.io$/.test(location.hostname) && seg ? "/" + seg + "/" : "/";
+        document.write('<base href="' + base + '" />');
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Halaman Tidak Ditemukan — HUB by Xpanca</title>
     <meta name="robots" content="noindex" />
-    <link rel="icon" type="image/png" href="/assets/images/logo.png" />
+    <link rel="icon" type="image/png" href="assets/images/logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261022-2" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261023-1" />
     <style>
       .nf {
         min-height: 100vh;
@@ -42,11 +52,11 @@
   <body>
     <main class="nf">
       <div>
-        <img src="/assets/images/logo.png" alt="HUB" />
+        <img src="assets/images/logo.png" alt="HUB" />
         <div class="code">404</div>
         <h1>Halaman tidak ditemukan</h1>
         <p>Halaman yang Anda cari mungkin sudah dipindahkan atau tidak pernah ada.</p>
-        <a class="btn btn-primary" href="/">Kembali ke beranda</a>
+        <a class="btn btn-primary" href="./">Kembali ke beranda</a>
       </div>
     </main>
   </body>
