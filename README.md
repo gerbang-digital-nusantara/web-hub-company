@@ -12,14 +12,23 @@ Polanya sama dengan `web-hub-v3`: server Go + Fiber kecil yang menyajikan folder
 ```bash
 cp .env.example .env     # opsional, semua punya default
 go run .
-# buka http://localhost:3110
+# buka http://localhost:3076
 ```
 
-Docker:
+Docker lokal: aktifkan `build: .` di `docker-compose.yml`, lalu `docker compose up -d --build`.
 
-```bash
-docker compose up -d --build
-```
+## Deploy ke VPS (pola sama dengan web-hub-v2)
+
+Push ke branch **`dev`** menjalankan `.github/workflows/dev.yml`: build image
+`ghcr.io/gerbang-digital-nusantara/web-hub-company:latest`, salin `docker-compose.yml`
+ke `/home/app/web-hub-company/` di VPS, tulis `.env` dari secret **`ENV`**, lalu
+`docker compose pull && up -d` (port 3076, data di `./data`).
+
+Secret repo yang dibutuhkan (nama sama dengan web-hub-v2): `PACKAGE_USERNAME`,
+`PACKAGE_TOKEN`, `VPS_IP`, `VPS_USER`, `VPS_PASSWORD`, `ENV`. Isi `ENV` =
+isi `.env` (lihat `.env.example`) — termasuk `HUBCTL_API_KEY`/`HUBCTL_API_SECRET`
+supaya form demo benar-benar diteruskan ke hub-control, dan `PROXY_HEADER=X-Forwarded-For`
+bila di belakang Nginx.
 
 ## Pratinjau di GitHub Pages
 

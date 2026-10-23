@@ -209,7 +209,7 @@ func main() {
 		log.Printf("[web-hub-company] form demo diteruskan ke hub-control %s (key %s)", hc.baseURL, hc.key)
 	}
 
-	port := getenv("PORT", "3110")
+	port := getenv("PORT", "3076")
 	app := buildApp(webRoot, st, hc)
 	log.Printf("[web-hub-company] serving %s on :%s", webRoot, port)
 	if err := app.Listen(fmt.Sprintf(":%s", port)); err != nil {

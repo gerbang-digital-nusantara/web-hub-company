@@ -28,10 +28,10 @@ COPY view /app/view
 
 RUN chmod +x web-hub-company && mkdir -p /app/data
 
-ENV PORT=3110
+ENV PORT=3076
 ENV WEB_ROOT=./view
 ENV DATA_DIR=/app/data
 
-EXPOSE 3110
+EXPOSE 3076
 
 CMD ["./web-hub-company"]

@@ -1,0 +1,58 @@
+name: Deploy Web Hub Company Dev to VPS
+
+# Pola sama dengan web-hub-v2 (.github/workflows/dev.yml): build image ke
+# ghcr.io, salin docker-compose.yml ke VPS, tulis .env dari secret ENV,
+# lalu pull & up. Isi ENV = isi .env (lihat .env.example), termasuk
+# HUBCTL_API_KEY & HUBCTL_API_SECRET supaya form demo diteruskan ke hub-control.
+on:
+  push:
+    branches:
+      - dev # Hanya jalankan pipeline saat ada push ke branch `dev`
+
+jobs:
+  deploy-web-hub-company-dev:
+    name: Deploy Web Hub Company Dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.PACKAGE_USERNAME }}
+          password: ${{ secrets.PACKAGE_TOKEN }}
+
+      - name: Build and push Docker image Web Hub Company
+        run: |
+          docker build -t ghcr.io/gerbang-digital-nusantara/web-hub-company:latest -f Dockerfile .
+          docker push ghcr.io/gerbang-digital-nusantara/web-hub-company:latest
+
+      - name: Copy docker-compose file to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: "docker-compose.yml,Dockerfile"
+          target: /home/app/web-hub-company/
+
+      - name: Deploy docker-compose on VPS
+        uses: appleboy/ssh-action@master
+        env:
+          ENV: ${{ secrets.ENV }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          envs: ENV
+          script: |
+            cd /home/app/web-hub-company/
+            echo "${{ secrets.PACKAGE_TOKEN }}" | sudo docker login ghcr.io -u ${{ secrets.PACKAGE_USERNAME }} --password-stdin
+            echo "$ENV" > .env
+            sudo docker compose stop
+            sudo docker compose rm -f
+            sudo docker compose pull
+            sudo docker compose up -d

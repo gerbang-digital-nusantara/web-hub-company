@@ -1,13 +1,14 @@
 services:
   web-hub-company:
-    build: .
+    # build: .   # lokal: aktifkan baris ini lalu `docker compose up -d --build`
+    image: ghcr.io/gerbang-digital-nusantara/web-hub-company:latest
     container_name: web-hub-company-container
     ports:
-      - "3110:3110"
+      - "3076:3076"
     env_file:
       - .env
-    # Permintaan demo disimpan di volume supaya tidak hilang saat container
-    # dibuat ulang. Baca: docker compose exec web-hub-company cat /app/data/demo-requests.jsonl
+    # Permintaan demo & pendaftaran disimpan di volume supaya tidak hilang saat
+    # container dibuat ulang. Baca: docker compose exec web-hub-company cat /app/data/demo-requests.jsonl
     volumes:
       - ./data:/app/data
     restart: unless-stopped
