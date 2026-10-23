@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -78,7 +79,11 @@ func (h *hubControl) sign(ts, method, path string, body []byte) string {
 // do mengirim request bertanda tangan. HTTP status dikembalikan apa adanya
 // (400 = ditolak hub-control, mis. email/subdomain sudah dipakai); error
 // hanya untuk gangguan jaringan / respons yang bukan JSON.
-func (h *hubControl) do(ctx context.Context, method, path string, query url.Values, body []byte) (int, *hubctlResponse, error) {
+//
+// clientIP = IP pengunjung asli (c.IP(); isi PROXY_HEADER bila di belakang
+// Nginx), diteruskan sebagai X-Forwarded-For supaya Audit Trail hub-control
+// tidak mencatat semua pendaftaran dari satu IP server situs ini.
+func (h *hubControl) do(ctx context.Context, clientIP, method, path string, query url.Values, body []byte) (int, *hubctlResponse, error) {
 	u := h.baseURL + path
 	if len(query) > 0 {
 		u += "?" + query.Encode()
@@ -91,6 +96,9 @@ func (h *hubControl) do(ctx context.Context, method, path string, query url.Valu
 	req.Header.Set("X-Api-Key", h.key)
 	req.Header.Set("X-Timestamp", ts)
 	req.Header.Set("X-Signature", h.sign(ts, method, path, body))
+	if clientIP != "" {
+		req.Header.Set("X-Forwarded-For", clientIP)
+	}
 	if len(body) > 0 {
 		req.Header.Set("Content-Type", "application/json")
 	}
@@ -110,14 +118,50 @@ func (h *hubControl) do(ctx context.Context, method, path string, query url.Valu
 	return res.StatusCode, &out, nil
 }
 
-func (h *hubControl) register(ctx context.Context, r hubctlRegister) (int, *hubctlResponse, error) {
+func (h *hubControl) register(ctx context.Context, clientIP string, r hubctlRegister) (int, *hubctlResponse, error) {
 	body, err := json.Marshal(r)
 	if err != nil {
 		return 0, nil, err
 	}
-	return h.do(ctx, http.MethodPost, "/api/public/register", nil, body)
+	return h.do(ctx, clientIP, http.MethodPost, "/api/public/register", nil, body)
 }
 
-func (h *hubControl) checkSubdomain(ctx context.Context, name string) (int, *hubctlResponse, error) {
-	return h.do(ctx, http.MethodGet, "/api/public/check-subdomain", url.Values{"name": {name}}, nil)
+func (h *hubControl) checkSubdomain(ctx context.Context, clientIP, name string) (int, *hubctlResponse, error) {
+	return h.do(ctx, clientIP, http.MethodGet, "/api/public/check-subdomain", url.Values{"name": {name}}, nil)
+}
+
+// hubctlFieldError memetakan penolakan 400 hub-control ke kolom form, mis.
+// "email ini sudah pernah digunakan untuk mendaftar" → kolom email.
+// fields = nama kolom form untuk subdomain/email/usaha/phone (beda tiap form).
+type hubctlFields struct{ Subdomain, Email, Usaha, Phone string }
+
+func hubctlFieldError(msg string, f hubctlFields) map[string]string {
+	m := strings.ToLower(msg)
+	switch {
+	case strings.Contains(m, "subdomain"):
+		return map[string]string{f.Subdomain: msg}
+	case strings.Contains(m, "email"):
+		return map[string]string{f.Email: msg}
+	case strings.Contains(m, "usaha") || strings.Contains(m, "business"):
+		return map[string]string{f.Usaha: msg}
+	case strings.Contains(m, "phone") || strings.Contains(m, "telepon"):
+		return map[string]string{f.Phone: msg}
+	}
+	return nil
+}
+
+/* ===================== Subdomain ===================== */
+
+// reSubdomain = aturan FORMAT hub-control: 3–30 karakter a-z/0-9/minus, tidak
+// diawali/diakhiri minus, tanpa "--". Ketersediaan & nama terlarang TIDAK
+// ditebak di sini — acuannya hasil check-subdomain hub-control.
+var reSubdomain = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]{1,28}[a-z0-9])$`)
+
+const msgSubdomainFormat = "3–30 karakter: huruf kecil, angka, atau tanda hubung (tanpa \"--\")"
+
+func subdomainError(s string) string {
+	if s != "" && (!reSubdomain.MatchString(s) || strings.Contains(s, "--")) {
+		return msgSubdomainFormat
+	}
+	return ""
 }

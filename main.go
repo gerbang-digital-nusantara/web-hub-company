@@ -157,8 +157,10 @@ func buildApp(webRoot string, st stores, hc *hubControl) *fiber.App {
 
 	paketPath := filepath.Join(webRoot, "assets", "data", "paket.json")
 	app.Post("/api/demo", perMinute(5), demoHandler(st.demo, hc))
-	app.Get("/api/demo/subdomain", perMinute(30), subdomainHandler(hc))
-	app.Post("/api/daftar", perMinute(5), daftarHandler(st.daftar, paketPath))
+	app.Post("/api/daftar", perMinute(5), daftarHandler(st.daftar, paketPath, hc))
+	cekSub := subdomainHandler(hc)
+	app.Get("/api/subdomain", perMinute(30), cekSub)
+	app.Get("/api/demo/subdomain", perMinute(30), cekSub) // nama lama
 
 	// URL rapi tanpa .html: /daftar → daftar.html.
 	app.Get("/daftar", func(c *fiber.Ctx) error {
@@ -204,9 +206,9 @@ func main() {
 
 	hc := newHubControl()
 	if hc == nil {
-		log.Printf("[web-hub-company] HUBCTL_API_KEY/SECRET kosong: form demo hanya dicatat ke jsonl")
+		log.Printf("[web-hub-company] HUBCTL_API_KEY/SECRET kosong: form Coba Gratis & Daftar hanya dicatat ke jsonl")
 	} else {
-		log.Printf("[web-hub-company] form demo diteruskan ke hub-control %s (key %s)", hc.baseURL, hc.key)
+		log.Printf("[web-hub-company] form Coba Gratis & Daftar diteruskan ke hub-control %s (key %s)", hc.baseURL, hc.key)
 	}
 
 	port := getenv("PORT", "3076")

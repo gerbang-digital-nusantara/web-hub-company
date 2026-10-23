@@ -30,7 +30,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <!-- ?v= = cache-buster: aset di-cache 1 hari (main.go), naikkan saat CSS/JS diubah. -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261023-2" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261023-3" />
   </head>
 
   <body>
@@ -64,7 +64,7 @@
             <li><a href="#faq">FAQ</a></li>
           </ul>
           <div class="nav-actions">
-            <a class="btn btn-outline nav-cta" href="#demo">Minta Demo</a>
+            <a class="btn btn-outline nav-cta" href="#demo">Coba Gratis</a>
             <a class="btn btn-primary nav-cta" href="daftar.html">Daftar</a>
           </div>
         </div>
@@ -84,7 +84,7 @@
               di akhir bulan.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#demo"><i class="bi bi-calendar-check"></i> Jadwalkan Demo Gratis</a>
+              <a class="btn btn-primary" href="#demo"><i class="bi bi-play-circle"></i> Coba Gratis</a>
               <a class="btn btn-outline" href="daftar.html"><i class="bi bi-rocket-takeoff"></i> Daftar Berlangganan</a>
             </div>
             <ul class="hero-points">
@@ -471,17 +471,17 @@
         </div>
       </section>
 
-      <!-- ===================== KONTAK / DEMO ===================== -->
+      <!-- ===================== COBA GRATIS (id="demo" dipertahankan untuk tautan lama) ===================== -->
       <section class="section contact" id="demo">
         <div class="container contact-grid">
           <div class="reveal">
             <span class="kicker">Mulai sekarang</span>
             <h2>Lihat HUB bekerja dengan alur bisnis Anda</h2>
-            <p class="contact-lead">Isi form, dan tim kami akan menghubungi Anda untuk menjadwalkan demo.</p>
+            <p class="contact-lead">Isi form untuk membuat akun coba gratis HUB di alamat aplikasi Anda sendiri.</p>
 
             <ol class="next-steps">
-              <li><span class="ns-no">1</span><div><b>Kami hubungi Anda</b>Lewat WhatsApp atau email untuk memahami kebutuhan bisnis Anda.</div></li>
-              <li><span class="ns-no">2</span><div><b>Demo langsung</b>Kami tunjukkan alur penjualan, stok, dan laporan yang relevan untuk Anda.</div></li>
+              <li><span class="ns-no">1</span><div><b>Daftar</b>Isi data usaha dan pilih alamat aplikasi, mis. <i>tokoanda</i>.hub.xpanca.com.</div></li>
+              <li><span class="ns-no">2</span><div><b>Persetujuan</b>Tim kami memeriksa pendaftaran lalu mengaktifkan akun Anda — kabarnya dikirim ke email.</div></li>
               <li><span class="ns-no">3</span><div><b>Setup &amp; pendampingan</b>Kami bantu siapkan akun, gudang, dan data awal Anda.</div></li>
             </ol>
 
@@ -499,7 +499,7 @@
           </div>
 
           <div class="form-card reveal">
-            <h3>Minta Demo Gratis</h3>
+            <h3>Coba Gratis</h3>
             <p>Tanpa biaya dan tanpa kewajiban berlangganan. Akun coba gratis Anda aktif setelah disetujui tim kami.</p>
             <form id="demoForm" novalidate>
               <div class="form-row">
@@ -530,7 +530,7 @@
               <div class="field">
                 <label for="fSub">Alamat aplikasi Anda <span class="opt">(opsional)</span></label>
                 <div class="input-affix">
-                  <input id="fSub" name="subdomain" type="text" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="namausaha" />
+                  <input id="fSub" name="subdomain" data-subcheck="subHint" type="text" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="namausaha" />
                   <span class="affix">.hub.xpanca.com</span>
                 </div>
                 <div class="field-error" data-err="subdomain"></div>
@@ -555,10 +555,10 @@
                 <input id="fWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
               </div>
               <button class="btn btn-primary btn-block" type="submit" id="demoSubmit">
-                <i class="bi bi-send"></i> Kirim Permintaan Demo
+                <i class="bi bi-rocket-takeoff"></i> Daftar Coba Gratis
               </button>
               <div class="form-status" id="demoStatus" role="status" aria-live="polite"></div>
-              <p class="form-privacy">Data Anda hanya dipakai untuk menghubungi Anda terkait demo HUB.</p>
+              <p class="form-privacy">Data Anda hanya dipakai untuk membuat akun coba gratis dan menghubungi Anda terkait HUB.</p>
             </form>
           </div>
         </div>
@@ -592,7 +592,7 @@
               <li><a href="#harga">Harga</a></li>
               <li><a href="#faq">FAQ</a></li>
               <li><a href="daftar.html">Daftar berlangganan</a></li>
-              <li><a href="#demo">Minta demo</a></li>
+              <li><a href="#demo">Coba gratis</a></li>
               <li><a href="#" data-contact-href="email" hidden>Email kami</a></li>
             </ul>
           </div>
@@ -608,8 +608,8 @@
       <i class="bi bi-whatsapp"></i>
     </a>
 
-    <script src="assets/js/config.js?v=20261023-2"></script>
-    <script src="assets/js/paket.js?v=20261023-2"></script>
-    <script src="assets/js/main.js?v=20261023-2"></script>
+    <script src="assets/js/config.js?v=20261023-3"></script>
+    <script src="assets/js/paket.js?v=20261023-3"></script>
+    <script src="assets/js/main.js?v=20261023-3"></script>
   </body>
 </html>

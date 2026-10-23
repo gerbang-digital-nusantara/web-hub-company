@@ -48,8 +48,8 @@ Push ke `main` menjalankan `.github/workflows/pages.yml`, yang mengunggah folder
 
 ```
 main.go                     app Fiber: static view/, /healthz, rute API, cache header
-demo.go                     POST /api/demo   — form Minta Demo (+ cek subdomain)
-hubcontrol.go               klien Partner API hub-control (HMAC) untuk form demo
+demo.go                     POST /api/demo   — form Coba Gratis, GET /api/subdomain
+hubcontrol.go               klien Partner API hub-control (HMAC) + aturan format subdomain
 daftar.go                   POST /api/daftar — form Daftar Berlangganan
 paket.go                    baca paket.json (validasi paket + estimasi tagihan)
 view/index.html             beranda: Hero, Cara Kerja, Modul, Produk, Keunggulan, Harga, FAQ, Demo
@@ -84,33 +84,46 @@ Opsional: jenis usaha, jumlah gudang/pengguna, alamat, NPWP (15/16 digit), usula
 subdomain (`<slug>.hub.xpanca.com`, pola SaaS branch `tenant` web-hub-v3), catatan.
 
 Hasilnya nomor pendaftaran `HUB-YYMMDD-XXXX` + satu baris di `data/pendaftaran.jsonl`
-(dengan estimasi tagihan saat mendaftar, status `baru`). **Belum membuat tenant**:
-DB, realm SSO, dan subdomain masih disiapkan tim secara manual.
+(dengan estimasi tagihan saat mendaftar, status `baru`). Bila `HUBCTL_*` diisi, pendaftar
+**ikut didaftarkan ke hub-control** (lihat di bawah) — semua calon klien masuk satu
+antrean di menu Tenant. Pemetaan: `nama_usaha`→`business_name`, `nama_pic`→`full_name`,
+`jenis_usaha`→`business_field`, `alamat, kota`→`address`, `npwp`, `phone`, `email`,
+`subdomain`. **Paket & periode belum bisa dikirim** (Partner API belum punya field-nya);
+keduanya hanya ada di jsonl sampai hub-control mendukungnya.
 
-## Form Minta Demo
+## Form Coba Gratis (beranda, `#demo`)
 
+Dulu bernama "Minta Demo"; endpoint, anchor `#demo`, dan `demo-requests.jsonl` tetap.
 `POST /api/demo` (JSON: `name`, `company`, `phone`, `email`, `subdomain`, `package`, `message`).
 Dibatasi 5 kiriman/menit/IP, ada honeypot `website` untuk bot. Tiap permintaan ditulis
 satu baris JSON ke `$DATA_DIR/demo-requests.jsonl` (`tail -f data/demo-requests.jsonl`).
 
-**Diteruskan ke hub-control (Partner API, partner PTR00001 "Web xpanca.id")** bila
-`HUBCTL_API_KEY` + `HUBCTL_API_SECRET` diisi di `.env` (`hubcontrol.go`):
+## Integrasi hub-control (Partner API, partner PTR00001 "Web xpanca.id")
 
-- Pendaftar didaftarkan sebagai tenant coba gratis lewat `POST /api/public/register`
-  (HMAC-SHA256; `company`→`business_name`, `name`→`full_name`, `phone`, `email`,
-  `subdomain` → `{subdomain}.hub.xpanca.com`, kosong = dibuat dari nama usaha).
-  Akun aktif setelah admin hub-control **Approve**.
-- Wajib: `name`, `company`, `email`. Penolakan 400 dari hub-control (email/subdomain
-  sudah dipakai) dikembalikan ke form sebagai 422 di kolom terkait, tidak disimpan.
-  Gangguan lain (401/5xx/jaringan) tetap dicatat ke jsonl (`hubctl_http`,
-  `hubctl_message`) dan dijawab seperti permintaan demo biasa — tim menindaklanjuti.
-- `GET /api/demo/subdomain?name=…` (30/menit/IP) = cek ketersediaan alamat sambil
-  mengetik; proksi ke `GET /api/public/check-subdomain` (path ditandatangani tanpa
-  query, body kosong). Bukan reservasi.
+Aktif bila `HUBCTL_API_KEY` + `HUBCTL_API_SECRET` diisi di `.env` (`hubcontrol.go`),
+untuk form Coba Gratis **dan** Daftar:
+
+- Pendaftar didaftarkan sebagai tenant lewat `POST /api/public/register` (HMAC-SHA256)
+  → `{subdomain}.hub.xpanca.com` (kosong = dibuat dari nama usaha). Akun aktif setelah
+  admin hub-control **Approve**.
+- IP pengunjung diteruskan sebagai header `X-Forwarded-For` supaya Audit Trail
+  hub-control mencatat IP asli — di VPS wajib `PROXY_HEADER=X-Forwarded-For`, kalau
+  tidak yang terkirim IP Nginx.
+- Coba Gratis wajib `name`, `company`, `email`. Penolakan 400 dari hub-control
+  (email/phone/subdomain sudah dipakai) dikembalikan ke form sebagai 422 di kolom
+  terkait, tidak disimpan. Gangguan lain (401/5xx/jaringan) tetap dicatat ke jsonl
+  (`hubctl_http`, `hubctl_message`) dan dijawab biasa — tim menindaklanjuti.
+- Subdomain: situs hanya memeriksa **format** (3–30 karakter a-z/0-9/minus, tidak
+  diawali/diakhiri minus, tanpa `--`; `subdomainError()` + `HubSub` di `main.js`).
+  Ketersediaan & nama terlarang **acuannya hub-control**: `GET /api/subdomain?name=…`
+  (30/menit/IP; alias lama `/api/demo/subdomain`) memproksi `check-subdomain`, dan
+  kedua form memakainya sambil mengetik (input `data-subcheck`). Bukan reservasi.
+- Belum ada langkah **OTP**. Aman selama `REQUIRE_OTP=false` di hub-control; bila OTP
+  dinyalakan, form perlu isian kode OTP dulu.
 - Secret **hanya** di `.env` server. Jangan pakai iframe `embed/register` hub-control di
   sini: iframe itu hanya mau tampil di domain terdaftar partner (`xpanca.id`).
 
-Tanpa `HUBCTL_*` form kembali ke perilaku lama: wajib `name` + salah satu dari
-`phone`/`email`, hanya dicatat ke jsonl.
+Tanpa `HUBCTL_*` kedua form kembali ke perilaku lama (hanya dicatat ke jsonl; Coba Gratis
+cukup `name` + salah satu dari `phone`/`email`).
 
 Respons memakai amplop yang sama dengan hub-api-v2: `{code, status, message, errors}`.

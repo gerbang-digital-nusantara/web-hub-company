@@ -159,8 +159,7 @@
     if (d.jumlah_pengguna < 0 || d.jumlah_pengguna > 10000) e.jumlah_pengguna = "Jumlah pengguna tidak valid";
     if (!d.kota) e.kota = "Kota wajib diisi";
     if (d.npwp && ![15, 16].includes(d.npwp.length)) e.npwp = "NPWP harus 15 atau 16 digit";
-    if (d.subdomain && !/^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/.test(d.subdomain))
-      e.subdomain = "3–30 karakter: huruf kecil, angka, atau tanda hubung";
+    if (d.subdomain && !window.HubSub?.valid(d.subdomain)) e.subdomain = window.HubSub.MSG_FORMAT;
     if (!d.nama_pic) e.nama_pic = "Nama penanggung jawab wajib diisi";
     if (!d.phone) e.phone = "No. WhatsApp wajib diisi";
     else if (!/^[0-9+\-\s()]{8,20}$/.test(d.phone)) e.phone = "Nomor WhatsApp tidak valid";
@@ -170,12 +169,7 @@
     return e;
   }
 
-  // Usulan alamat: ketik bebas, dirapikan jadi huruf kecil-angka-tanda hubung.
-  const sub = $("#fSub");
-  sub?.addEventListener("input", () => {
-    const rapi = sub.value.toLowerCase().replace(/[\s_.]+/g, "-").replace(/[^a-z0-9-]/g, "");
-    if (rapi !== sub.value) sub.value = rapi;
-  });
+  // Alamat aplikasi: dirapikan & dicek ke hub-control oleh main.js (data-subcheck).
 
   /* ===================== Kirim ===================== */
 
@@ -279,6 +273,13 @@
       $("#doneStep2").textContent = `Tagihan ${per} paket ${r.paket} sebesar ${P.rupiah(r.estimasi)} (belum PPN) dikirim ke ${
         r.email || d.email
       }.`;
+    }
+
+    // Sudah tercatat di hub-control → aplikasinya tinggal di-Approve admin.
+    if (r.hubctl) {
+      $("#doneStep3").textContent = `Setelah disetujui, aplikasi Anda aktif di ${
+        r.domain || "alamat yang Anda pilih"
+      } — info login dikirim ke email Anda.`;
     }
 
     const cfg = window.HUB_CONTACT || {};

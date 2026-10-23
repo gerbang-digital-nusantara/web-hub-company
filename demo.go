@@ -11,9 +11,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-/* ===================== Form Minta Demo ===================== */
+/* ===================== Form Coba Gratis (beranda, #demo) ===================== */
 
-// demoRequest = isian form "Minta Demo" di halaman depan.
+// demoRequest = isian form "Coba Gratis" di halaman depan (dulu "Minta Demo";
+// endpoint & nama berkas tetap /api/demo, demo-requests.jsonl supaya tautan
+// dan catatan lama tidak putus).
 //
 // `Website` adalah HONEYPOT: kolomnya disembunyikan dari manusia lewat CSS,
 // jadi yang mengisinya hampir pasti bot. Permintaan seperti itu dijawab
@@ -38,9 +40,13 @@ type demoRecord struct {
 	ReceivedAt time.Time `json:"received_at"`
 	IP         string    `json:"ip"`
 	UserAgent  string    `json:"user_agent"`
-	// Hasil penerusan ke hub-control (kosong bila HUBCTL_* belum diisi).
-	// Baris tetap disimpan walau hub-control gagal, supaya tim sales bisa
-	// menindaklanjuti / mendaftarkan manual.
+	hubctlResult
+}
+
+// hubctlResult = hasil penerusan ke hub-control, ikut disimpan di baris jsonl
+// (kosong bila HUBCTL_* belum diisi). Baris tetap disimpan walau hub-control
+// gagal, supaya tim bisa menindaklanjuti / mendaftarkan manual.
+type hubctlResult struct {
 	HubctlHTTP    int             `json:"hubctl_http,omitempty"`
 	HubctlOK      bool            `json:"hubctl_ok,omitempty"`
 	HubctlMessage string          `json:"hubctl_message,omitempty"`
@@ -91,40 +97,35 @@ func (d *demoRequest) validate(trial bool) map[string]string {
 	return errs
 }
 
-// subdomainError: aturan format yang sama dengan hub-control (3–30 karakter,
-// a-z/0-9/minus, tidak diawali/diakhiri minus) + nama yang kita pakai sendiri.
-// Kosong = boleh (hub-control membuatnya otomatis dari nama usaha).
-func subdomainError(s string) string {
+const (
+	msgDemoDiterima  = "Terima kasih, tim kami akan segera menghubungi Anda."
+	msgTrialDiterima = "Pendaftaran coba gratis diterima. Akun Anda aktif setelah disetujui tim kami — kabarnya kami kirim ke email Anda."
+)
+
+// teruskanHubctl mendaftarkan r ke hub-control dan mengisi res. Kembalian
+// rejected != "" = hub-control MENOLAK isian (400: email/subdomain sudah
+// dipakai, dst.) — tampilkan ke pendaftar, jangan disimpan. Gangguan lain
+// (401/5xx/jaringan) bukan salah pendaftar: dicatat di res, alur berlanjut.
+func teruskanHubctl(c *fiber.Ctx, hc *hubControl, tag string, r hubctlRegister, res *hubctlResult) (rejected string) {
+	code, out, err := hc.register(c.UserContext(), c.IP(), r)
+	res.HubctlHTTP = code
 	switch {
-	case s == "":
+	case err != nil:
+		res.HubctlMessage = err.Error()
+	case out.Status:
+		res.HubctlOK = true
+		res.HubctlMessage = out.Message
+		res.HubctlData = out.Data
 		return ""
-	case !reSubdomain.MatchString(s):
-		return "3–30 karakter: huruf kecil, angka, atau tanda hubung"
-	case subdomainDipakai[s]:
-		return "Alamat ini tidak tersedia, coba yang lain"
+	case code == fiber.StatusBadRequest:
+		log.Printf("[%s] hub-control menolak %s: %s", tag, r.Email, out.Message)
+		return out.Message
+	default:
+		res.HubctlMessage = out.Message
 	}
+	log.Printf("[%s] hub-control gagal (HTTP %d): %s", tag, code, res.HubctlMessage)
 	return ""
 }
-
-// hubctlFieldError memetakan penolakan 400 hub-control ke kolom form,
-// mis. "email ini sudah pernah digunakan untuk mendaftar" → email.
-func hubctlFieldError(msg string) map[string]string {
-	m := strings.ToLower(msg)
-	switch {
-	case strings.Contains(m, "subdomain"):
-		return map[string]string{"subdomain": msg}
-	case strings.Contains(m, "email"):
-		return map[string]string{"email": msg}
-	case strings.Contains(m, "usaha") || strings.Contains(m, "business"):
-		return map[string]string{"company": msg}
-	case strings.Contains(m, "phone") || strings.Contains(m, "telepon"):
-		// mis. "phone ini sudah pernah digunakan untuk mendaftar"
-		return map[string]string{"phone": msg}
-	}
-	return nil
-}
-
-const msgDemoDiterima = "Terima kasih, tim kami akan segera menghubungi Anda."
 
 func demoHandler(store *jsonlStore, hc *hubControl) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -148,34 +149,19 @@ func demoHandler(store *jsonlStore, hc *hubControl) fiber.Handler {
 
 		msg := msgDemoDiterima
 		if hc != nil {
-			code, res, err := hc.register(c.UserContext(), hubctlRegister{
+			rej := teruskanHubctl(c, hc, "demo", hubctlRegister{
 				Email:        req.Email,
 				BusinessName: req.Company,
 				Phone:        req.Phone,
 				FullName:     req.Name,
 				Subdomain:    req.Subdomain,
-			})
-			rec.HubctlHTTP = code
-			switch {
-			case err != nil:
-				rec.HubctlMessage = err.Error()
-			case res.Status:
-				rec.HubctlOK = true
-				rec.HubctlMessage = res.Message
-				rec.HubctlData = res.Data
-				msg = "Pendaftaran coba gratis diterima. Akun Anda aktif setelah disetujui tim kami — kabarnya kami kirim ke email Anda."
-			case code == fiber.StatusBadRequest:
-				// Ditolak karena isian (email/subdomain sudah dipakai, dst.):
-				// kembalikan ke pendaftar untuk diperbaiki, tidak disimpan.
-				log.Printf("[demo] hub-control menolak %s: %s", req.Email, res.Message)
-				return respond(c, fiber.StatusUnprocessableEntity, res.Message, nil, hubctlFieldError(res.Message))
-			default:
-				rec.HubctlMessage = res.Message
+			}, &rec.hubctlResult)
+			if rej != "" {
+				return respond(c, fiber.StatusUnprocessableEntity, rej, nil,
+					hubctlFieldError(rej, hubctlFields{"subdomain", "email", "company", "phone"}))
 			}
-			if !rec.HubctlOK {
-				// 401/5xx/jaringan: bukan salah pendaftar. Tetap dicatat dan
-				// dijawab sebagai permintaan demo biasa; tim yang menindaklanjuti.
-				log.Printf("[demo] hub-control gagal (HTTP %d): %s", code, rec.HubctlMessage)
+			if rec.HubctlOK {
+				msg = msgTrialDiterima
 			}
 		}
 
@@ -195,9 +181,10 @@ func demoHandler(store *jsonlStore, hc *hubControl) fiber.Handler {
 	}
 }
 
-// subdomainHandler: GET /api/demo/subdomain?name=… — cek ketersediaan
-// {name}.hub.xpanca.com lewat hub-control untuk petunjuk langsung di form.
-// Hasilnya bukan reservasi; nama baru terkunci saat register berhasil.
+// subdomainHandler: GET /api/subdomain?name=… — cek ketersediaan
+// {name}.hub.xpanca.com lewat hub-control (dipakai form Coba Gratis & halaman
+// Daftar). hub-control yang jadi acuan, termasuk daftar nama terlarangnya;
+// di sini hanya format. Hasilnya bukan reservasi.
 func subdomainHandler(hc *hubControl) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		name := strings.ToLower(clip(c.Query("name"), 30))
@@ -210,9 +197,9 @@ func subdomainHandler(hc *hubControl) fiber.Handler {
 		if hc == nil {
 			return respond(c, fiber.StatusServiceUnavailable, "Pengecekan subdomain belum diaktifkan", nil, nil)
 		}
-		code, res, err := hc.checkSubdomain(c.UserContext(), name)
+		code, res, err := hc.checkSubdomain(c.UserContext(), c.IP(), name)
 		if err != nil || !res.Status {
-			log.Printf("[demo] cek subdomain gagal (HTTP %d): %v", code, err)
+			log.Printf("[subdomain] cek gagal (HTTP %d): %v", code, err)
 			return respond(c, fiber.StatusBadGateway, "Pengecekan subdomain sedang tidak tersedia", nil, nil)
 		}
 		return respond(c, fiber.StatusOK, res.Message, res.Data, nil)

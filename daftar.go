@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/rand"
+	"encoding/json"
 	"log"
 	"regexp"
 	"strings"
@@ -14,10 +15,11 @@ import (
 
 // daftarRequest = isian halaman Daftar (view/daftar.html).
 //
-// Pendaftaran BELUM membuat akun/tenant apa pun: ia hanya dicatat ke
-// DATA_DIR/pendaftaran.jsonl untuk diverifikasi tim, lalu tim yang menagih
-// pembayaran pertama dan menyiapkan aplikasinya (DB, realm SSO, subdomain).
-// `Website` = honeypot, sama seperti form demo.
+// Dicatat ke DATA_DIR/pendaftaran.jsonl, dan — bila HUBCTL_* diisi — ikut
+// didaftarkan ke hub-control seperti form Coba Gratis, supaya semua calon
+// klien masuk satu antrean di menu Tenant dan admin cukup Approve (paket &
+// periode belum bisa dikirim lewat Partner API; tercatat di jsonl dan perlu
+// dukungan dari sisi hub-control). `Website` = honeypot, sama seperti form demo.
 type daftarRequest struct {
 	Paket   string `json:"paket"`
 	Periode string `json:"periode"` // "bulanan" | "tahunan"; diabaikan untuk paket penawaran
@@ -52,18 +54,10 @@ type daftarRecord struct {
 	ReceivedAt time.Time `json:"received_at"`
 	IP         string    `json:"ip"`
 	UserAgent  string    `json:"user_agent"`
+	hubctlResult
 }
 
-var (
-	reSubdomain = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]{1,28}[a-z0-9])$`)
-	reDigits    = regexp.MustCompile(`[^0-9]`)
-)
-
-// Subdomain yang sudah/akan dipakai sendiri — tidak boleh diusulkan pendaftar.
-var subdomainDipakai = map[string]bool{
-	"www": true, "hub": true, "api": true, "app": true, "admin": true, "mail": true,
-	"testing": true, "dev": true, "staging": true, "sso": true, "menjala": true,
-}
+var reDigits = regexp.MustCompile(`[^0-9]`)
 
 func (d *daftarRequest) normalize() {
 	d.Paket = strings.ToLower(clip(d.Paket, 30))
@@ -106,12 +100,8 @@ func (d *daftarRequest) validate(pf *paketFile) map[string]string {
 	if d.NPWP != "" && len(d.NPWP) != 15 && len(d.NPWP) != 16 {
 		errs["npwp"] = "NPWP harus 15 atau 16 digit"
 	}
-	if d.Subdomain != "" {
-		if !reSubdomain.MatchString(d.Subdomain) {
-			errs["subdomain"] = "3–30 karakter: huruf kecil, angka, atau tanda hubung"
-		} else if subdomainDipakai[d.Subdomain] {
-			errs["subdomain"] = "Alamat ini tidak tersedia, coba yang lain"
-		}
+	if msg := subdomainError(d.Subdomain); msg != "" {
+		errs["subdomain"] = msg
 	}
 	if d.NamaPIC == "" {
 		errs["nama_pic"] = "Nama penanggung jawab wajib diisi"
@@ -152,7 +142,7 @@ func kodeDaftar(t time.Time) string {
 	return "HUB-" + t.Format("060102") + "-" + string(b)
 }
 
-func daftarHandler(store *jsonlStore, paketPath string) fiber.Handler {
+func daftarHandler(store *jsonlStore, paketPath string, hc *hubControl) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var req daftarRequest
 		if err := c.BodyParser(&req); err != nil {
@@ -189,12 +179,49 @@ func daftarHandler(store *jsonlStore, paketPath string) fiber.Handler {
 			IP:            c.IP(),
 			UserAgent:     string(c.Request().Header.UserAgent()),
 		}
+
+		if hc != nil {
+			alamat := req.Alamat
+			if req.Kota != "" {
+				alamat = strings.TrimLeft(alamat+", "+req.Kota, ", ")
+			}
+			rej := teruskanHubctl(c, hc, "daftar", hubctlRegister{
+				Email:         req.Email,
+				BusinessName:  req.NamaUsaha,
+				Phone:         req.Phone,
+				FullName:      req.NamaPIC,
+				BusinessField: req.JenisUsaha,
+				NPWP:          req.NPWP,
+				Address:       alamat,
+				Subdomain:     req.Subdomain,
+			}, &rec.hubctlResult)
+			if rej != "" {
+				return respond(c, fiber.StatusUnprocessableEntity, rej, nil,
+					hubctlFieldError(rej, hubctlFields{"subdomain", "email", "nama_usaha", "phone"}))
+			}
+		}
+
 		if err := store.append(rec); err != nil {
 			log.Printf("[daftar] gagal menyimpan: %v", err)
-			return respond(c, fiber.StatusInternalServerError, "Gagal menyimpan pendaftaran, silakan hubungi kami lewat WhatsApp.", nil, nil)
+			if !rec.HubctlOK {
+				return respond(c, fiber.StatusInternalServerError, "Gagal menyimpan pendaftaran, silakan hubungi kami lewat WhatsApp.", nil, nil)
+			}
 		}
-		log.Printf("[daftar] %s: %s — paket %s %s", rec.Kode, req.NamaUsaha, p.Nama, req.Periode)
+		log.Printf("[daftar] %s: %s — paket %s %s hubctl=%d", rec.Kode, req.NamaUsaha, p.Nama, req.Periode, rec.HubctlHTTP)
+		// Alamat aplikasi dari hub-control (data.domain, atau data.slug).
+		var hub struct {
+			Slug   string `json:"slug"`
+			Domain string `json:"domain"`
+		}
+		if rec.HubctlOK {
+			_ = json.Unmarshal(rec.HubctlData, &hub)
+			if hub.Domain == "" && hub.Slug != "" {
+				hub.Domain = hub.Slug + ".hub.xpanca.com"
+			}
+		}
 		return respond(c, fiber.StatusOK, "Pendaftaran diterima", fiber.Map{
+			"hubctl":     rec.HubctlOK,
+			"domain":     hub.Domain,
 			"kode":       rec.Kode,
 			"paket":      p.Nama,
 			"periode":    req.Periode,

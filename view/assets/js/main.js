@@ -73,7 +73,7 @@
     const bar = document.createElement("div");
     bar.className = "preview-bar";
     bar.innerHTML =
-      '<i class="bi bi-eye"></i> Versi pratinjau — form Demo &amp; Daftar bisa dicoba, tetapi tidak dikirim ke mana pun.';
+      '<i class="bi bi-eye"></i> Versi pratinjau — form Coba Gratis &amp; Daftar bisa dicoba, tetapi tidak dikirim ke mana pun.';
     document.body.prepend(bar);
   }
 
@@ -121,10 +121,62 @@
       });
   }
 
-  /* ===================== Form demo ===================== */
+  /* ===================== Alamat aplikasi (subdomain) ===================== */
+
+  /* Dipakai form Coba Gratis (index.html) & halaman Daftar. Input bertanda
+   * data-subcheck="<id elemen petunjuk>" dirapikan sambil diketik lalu dicek
+   * ke GET api/subdomain → check-subdomain hub-control. hub-control yang jadi
+   * acuan (termasuk nama terlarang); di sini hanya format, sama dengan
+   * subdomainError() di hubcontrol.go. Hanya petunjuk, bukan reservasi. */
+  const HubSub = (window.HubSub = {
+    MSG_FORMAT: '3–30 karakter: huruf kecil, angka, atau tanda hubung (tanpa "--")',
+    valid: (v) => /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/.test(v) && !v.includes("--"),
+    resetters: [],
+    reset() {
+      this.resetters.forEach((f) => f());
+    },
+  });
+  $$("input[data-subcheck]").forEach((input) => {
+    const hint = document.getElementById(input.dataset.subcheck);
+    const awal = hint?.textContent || "";
+    const setHint = (kind, msg) => {
+      if (!hint) return;
+      hint.className = `hint${kind ? ` ${kind}` : ""}`;
+      hint.textContent = msg;
+    };
+    HubSub.resetters.push(() => setHint("", awal));
+    let timer = 0;
+    let seq = 0;
+    input.addEventListener("input", () => {
+      // Ketik bebas: huruf kecil; spasi/_/. jadi tanda hubung; sisanya dibuang.
+      const v = input.value.toLowerCase().replace(/[\s_.]+/g, "-").replace(/[^a-z0-9-]/g, "");
+      if (v !== input.value) input.value = v;
+      clearTimeout(timer);
+      const my = ++seq;
+      if (!v) return setHint("", awal);
+      if (!HubSub.valid(v)) return setHint("bad", HubSub.MSG_FORMAT);
+      if (window.HUB_PREVIEW) return setHint("", `Alamat: ${v}.hub.xpanca.com`);
+      setHint("", "Memeriksa…");
+      timer = setTimeout(async () => {
+        try {
+          const res = await fetch(`api/subdomain?name=${encodeURIComponent(v)}`);
+          const json = await res.json().catch(() => ({}));
+          if (my !== seq) return; // sudah diketik ulang
+          const d = json.data;
+          if (!res.ok || !d) return setHint("", awal);
+          if (d.available) setHint("ok", `✓ ${d.domain || `${v}.hub.xpanca.com`} tersedia`);
+          else setHint("bad", d.reason || "Alamat ini sudah dipakai, coba yang lain");
+        } catch (e) {
+          if (my === seq) setHint("", awal);
+        }
+      }, 450);
+    });
+  });
+
+  /* ===================== Form Coba Gratis (#demo) ===================== */
 
   const form = $("#demoForm");
-  if (!form) return; // halaman tanpa form demo (mis. daftar.html)
+  if (!form) return; // halaman tanpa form Coba Gratis (mis. daftar.html)
   const submit = $("#demoSubmit");
   const status = $("#demoStatus");
 
@@ -151,7 +203,6 @@
   // Validasi sisi klien = cermin aturan demo.go (server tetap memeriksa ulang).
   // Nama usaha & email wajib karena pendaftar diteruskan ke hub-control
   // sebagai tenant coba gratis.
-  const reSub = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
   const validate = (d) => {
     const e = {};
     if (!d.name) e.name = "Nama wajib diisi";
@@ -160,46 +211,9 @@
     if (d.phone && !/^[0-9+\-\s()]{8,20}$/.test(d.phone)) e.phone = "Nomor WhatsApp tidak valid";
     if (!d.email) e.email = "Email wajib diisi";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) e.email = "Email tidak valid";
-    if (d.subdomain && !reSub.test(d.subdomain)) e.subdomain = "3–30 karakter: huruf kecil, angka, atau tanda hubung";
+    if (d.subdomain && !HubSub.valid(d.subdomain)) e.subdomain = HubSub.MSG_FORMAT;
     return e;
   };
-
-  /* Cek ketersediaan alamat {subdomain}.hub.xpanca.com sambil mengetik
-   * (GET api/demo/subdomain → hub-control). Hanya petunjuk, bukan reservasi. */
-  const sub = $("#fSub");
-  const subHint = $("#subHint");
-  const subHintAwal = subHint?.textContent || "";
-  const setSubHint = (kind, msg) => {
-    if (!subHint) return;
-    subHint.className = `hint${kind ? ` ${kind}` : ""}`;
-    subHint.textContent = msg;
-  };
-  let subTimer = 0;
-  let subSeq = 0;
-  sub?.addEventListener("input", () => {
-    // Ketik bebas → paksa huruf kecil, buang karakter yang tak diizinkan.
-    const v = sub.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
-    if (v !== sub.value) sub.value = v;
-    clearTimeout(subTimer);
-    const seq = ++subSeq;
-    if (!v) return setSubHint("", subHintAwal);
-    if (!reSub.test(v)) return setSubHint("bad", "3–30 karakter: huruf kecil, angka, atau tanda hubung");
-    if (window.HUB_PREVIEW) return setSubHint("", `Alamat: ${v}.hub.xpanca.com`);
-    setSubHint("", "Memeriksa…");
-    subTimer = setTimeout(async () => {
-      try {
-        const res = await fetch(`api/demo/subdomain?name=${encodeURIComponent(v)}`);
-        const json = await res.json().catch(() => ({}));
-        if (seq !== subSeq) return; // sudah diketik ulang
-        const d = json.data;
-        if (!res.ok || !d) return setSubHint("", subHintAwal);
-        if (d.available) setSubHint("ok", `✓ ${d.domain || `${v}.hub.xpanca.com`} tersedia`);
-        else setSubHint("bad", d.reason || "Alamat ini sudah dipakai, coba yang lain");
-      } catch (e) {
-        if (seq === subSeq) setSubHint("", subHintAwal);
-      }
-    }, 450);
-  });
 
   form.addEventListener("submit", async (ev) => {
     ev.preventDefault();
@@ -234,7 +248,7 @@
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.status) {
         form.reset();
-        setSubHint("", subHintAwal);
+        HubSub.reset();
         // Bila tercatat di hub-control, tampilkan alamat aplikasinya.
         const dom = json.data?.domain || (json.data?.slug ? `${json.data.slug}.hub.xpanca.com` : "");
         setStatus(
