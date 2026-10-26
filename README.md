@@ -79,22 +79,23 @@ data/pendaftaran.jsonl      pendaftaran berlangganan yang masuk (tidak di-commit
 ## Form Daftar Berlangganan
 
 `POST /api/daftar`. Wajib: `paket` (id di paket.json), `periode` (`bulanan`/`tahunan`,
-kecuali paket penawaran), `nama_usaha`, `kota`, `nama_pic`, `phone`, `email`, `setuju`.
-Opsional: jenis usaha, jumlah gudang/pengguna, alamat, NPWP (15/16 digit), usulan
-subdomain (`<slug>.hub.xpanca.com`, pola SaaS branch `tenant` web-hub-v3), catatan.
+kecuali paket penawaran), `nama_pic`, `nama_usaha`, `phone`, `email`, `setuju`.
+Opsional: usulan subdomain (`<slug>.hub.xpanca.com`, pola SaaS branch `tenant` web-hub-v3).
+Isian data disamakan dengan form Coba Gratis (nama, nama usaha, WhatsApp, email, alamat
+aplikasi) — kolom lama jenis usaha, gudang/pengguna, kota, alamat, NPWP, jabatan, catatan
+dihapus sejak 2026-10-26.
 
 Hasilnya nomor pendaftaran `HUB-YYMMDD-XXXX` + satu baris di `data/pendaftaran.jsonl`
 (dengan estimasi tagihan saat mendaftar, status `baru`). Bila `HUBCTL_*` diisi, pendaftar
 **ikut didaftarkan ke hub-control** (lihat di bawah) — semua calon klien masuk satu
 antrean di menu Tenant. Pemetaan: `nama_usaha`→`business_name`, `nama_pic`→`full_name`,
-`jenis_usaha`→`business_field`, `alamat, kota`→`address`, `npwp`, `phone`, `email`,
-`subdomain`. **Paket & periode belum bisa dikirim** (Partner API belum punya field-nya);
+`phone`, `email`, `subdomain`. **Paket & periode belum bisa dikirim** (Partner API belum punya field-nya);
 keduanya hanya ada di jsonl sampai hub-control mendukungnya.
 
 ## Form Coba Gratis (beranda, `#demo`)
 
 Dulu bernama "Minta Demo"; endpoint, anchor `#demo`, dan `demo-requests.jsonl` tetap.
-`POST /api/demo` (JSON: `name`, `company`, `phone`, `email`, `subdomain`, `package`, `message`).
+`POST /api/demo` (JSON: `name`, `company`, `phone`, `email`, `subdomain`, `package`; `message` masih diterima tapi kolomnya sudah tidak ada di form).
 Dibatasi 5 kiriman/menit/IP, ada honeypot `website` untuk bot. Tiap permintaan ditulis
 satu baris JSON ke `$DATA_DIR/demo-requests.jsonl` (`tail -f data/demo-requests.jsonl`).
 

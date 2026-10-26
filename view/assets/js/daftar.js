@@ -154,13 +154,9 @@
     const p = data?.paket.find((x) => x.id === d.paket);
     if (!p) e.paket = "Pilih paket";
     else if (!P.penawaran(p) && !["bulanan", "tahunan"].includes(d.periode)) e.periode = "Pilih periode pembayaran";
+    if (!d.nama_pic) e.nama_pic = "Nama wajib diisi";
     if (!d.nama_usaha) e.nama_usaha = "Nama usaha wajib diisi";
-    if (d.jumlah_gudang < 0 || d.jumlah_gudang > 10000) e.jumlah_gudang = "Jumlah gudang tidak valid";
-    if (d.jumlah_pengguna < 0 || d.jumlah_pengguna > 10000) e.jumlah_pengguna = "Jumlah pengguna tidak valid";
-    if (!d.kota) e.kota = "Kota wajib diisi";
-    if (d.npwp && ![15, 16].includes(d.npwp.length)) e.npwp = "NPWP harus 15 atau 16 digit";
     if (d.subdomain && !window.HubSub?.valid(d.subdomain)) e.subdomain = window.HubSub.MSG_FORMAT;
-    if (!d.nama_pic) e.nama_pic = "Nama penanggung jawab wajib diisi";
     if (!d.phone) e.phone = "No. WhatsApp wajib diisi";
     else if (!/^[0-9+\-\s()]{8,20}$/.test(d.phone)) e.phone = "Nomor WhatsApp tidak valid";
     if (!d.email) e.email = "Email wajib diisi";
@@ -175,26 +171,14 @@
 
   function kumpulkan() {
     const v = (name) => String(form.elements[name]?.value || "").trim();
-    const angka = (name) => {
-      const s = v(name);
-      return s === "" ? 0 : Math.trunc(Number(s));
-    };
     return {
       paket: form.querySelector('input[name="paket"]:checked')?.value || "",
       periode: periodeTerpilih(),
-      nama_usaha: v("nama_usaha"),
-      jenis_usaha: v("jenis_usaha"),
-      jumlah_gudang: angka("jumlah_gudang"),
-      jumlah_pengguna: angka("jumlah_pengguna"),
-      kota: v("kota"),
-      alamat: v("alamat"),
-      npwp: v("npwp").replace(/[^0-9]/g, ""),
-      subdomain: v("subdomain").toLowerCase(),
       nama_pic: v("nama_pic"),
-      jabatan: v("jabatan"),
+      nama_usaha: v("nama_usaha"),
       phone: v("phone"),
       email: v("email"),
-      catatan: v("catatan"),
+      subdomain: v("subdomain").toLowerCase(),
       setuju: !!form.elements.setuju?.checked,
       website: v("website"),
     };

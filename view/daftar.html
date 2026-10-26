@@ -20,7 +20,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
-    <link rel="stylesheet" href="assets/css/style.css?v=20261023-3" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261026-1" />
   </head>
 
   <body>
@@ -96,86 +96,21 @@
                 </p>
               </div>
 
-              <!-- 2. Data usaha -->
+              <!-- 2. Data pendaftar (isiannya sama dengan form Coba Gratis) -->
               <div class="panel">
-                <h2 class="panel-title"><span class="panel-no">2</span>Data usaha</h2>
-                <p class="panel-sub">Dipakai untuk menyiapkan aplikasi dan kop dokumen (faktur, surat jalan).</p>
+                <h2 class="panel-title"><span class="panel-no">2</span>Data pendaftar</h2>
+                <p class="panel-sub">Kami hubungi Anda untuk verifikasi. Email dipakai untuk akun admin pertama dan tagihan.</p>
 
                 <div class="form-row">
                   <div class="field">
-                    <label for="fNamaUsaha">Nama usaha / perusahaan</label>
-                    <input id="fNamaUsaha" name="nama_usaha" type="text" autocomplete="organization" maxlength="150" required />
-                    <div class="field-error" data-err="nama_usaha"></div>
-                  </div>
-                  <div class="field">
-                    <label for="fJenis">Jenis usaha</label>
-                    <select id="fJenis" name="jenis_usaha">
-                      <option value="">Pilih jenis usaha</option>
-                      <option>Distributor / grosir</option>
-                      <option>Toko / ritel</option>
-                      <option>Manufaktur / produksi</option>
-                      <option>Agen / sub-distributor</option>
-                      <option>Jasa</option>
-                      <option>Lainnya</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-row-3">
-                  <div class="field">
-                    <label for="fGudang">Jumlah gudang</label>
-                    <input id="fGudang" name="jumlah_gudang" type="number" min="0" max="10000" inputmode="numeric" placeholder="1" />
-                    <div class="field-error" data-err="jumlah_gudang"></div>
-                  </div>
-                  <div class="field">
-                    <label for="fPengguna">Jumlah pengguna</label>
-                    <input id="fPengguna" name="jumlah_pengguna" type="number" min="0" max="10000" inputmode="numeric" placeholder="3" />
-                    <div class="field-error" data-err="jumlah_pengguna"></div>
-                  </div>
-                  <div class="field">
-                    <label for="fKota">Kota</label>
-                    <input id="fKota" name="kota" type="text" autocomplete="address-level2" maxlength="80" required />
-                    <div class="field-error" data-err="kota"></div>
-                  </div>
-                </div>
-                <div class="field">
-                  <label for="fAlamat">Alamat usaha <span class="opt">(opsional)</span></label>
-                  <textarea id="fAlamat" name="alamat" rows="2" maxlength="500" autocomplete="street-address" style="min-height: 64px"></textarea>
-                </div>
-
-                <div class="form-row">
-                  <div class="field">
-                    <label for="fNpwp">NPWP <span class="opt">(opsional)</span></label>
-                    <input id="fNpwp" name="npwp" type="text" inputmode="numeric" maxlength="22" placeholder="15 atau 16 digit" />
-                    <div class="field-error" data-err="npwp"></div>
-                    <div class="hint">Diperlukan bila Anda membutuhkan faktur pajak.</div>
-                  </div>
-                  <div class="field">
-                    <label for="fSub">Usulan alamat aplikasi <span class="opt">(opsional)</span></label>
-                    <div class="input-affix">
-                      <input id="fSub" name="subdomain" data-subcheck="subHint" type="text" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="namausaha" />
-                      <span class="affix">.hub.xpanca.com</span>
-                    </div>
-                    <div class="field-error" data-err="subdomain"></div>
-                    <div class="hint" id="subHint">Kosongkan bila ingin dibuat otomatis dari nama usaha.</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3. Penanggung jawab -->
-              <div class="panel">
-                <h2 class="panel-title"><span class="panel-no">3</span>Penanggung jawab</h2>
-                <p class="panel-sub">Kami hubungi orang ini untuk verifikasi. Emailnya dipakai untuk akun admin pertama dan tagihan.</p>
-
-                <div class="form-row">
-                  <div class="field">
-                    <label for="fPic">Nama lengkap</label>
+                    <label for="fPic">Nama</label>
                     <input id="fPic" name="nama_pic" type="text" autocomplete="name" maxlength="100" required />
                     <div class="field-error" data-err="nama_pic"></div>
                   </div>
                   <div class="field">
-                    <label for="fJabatan">Jabatan <span class="opt">(opsional)</span></label>
-                    <input id="fJabatan" name="jabatan" type="text" autocomplete="organization-title" maxlength="80" placeholder="Pemilik, manajer keuangan, …" />
+                    <label for="fNamaUsaha">Nama usaha</label>
+                    <input id="fNamaUsaha" name="nama_usaha" type="text" autocomplete="organization" maxlength="150" required />
+                    <div class="field-error" data-err="nama_usaha"></div>
                   </div>
                 </div>
                 <div class="form-row">
@@ -191,8 +126,13 @@
                   </div>
                 </div>
                 <div class="field" style="margin-bottom: 0">
-                  <label for="fCatatan">Catatan <span class="opt">(opsional)</span></label>
-                  <textarea id="fCatatan" name="catatan" maxlength="2000" placeholder="Mis. ingin mulai bulan depan, sudah pakai Excel untuk stok, perlu aplikasi kasir untuk 3 toko"></textarea>
+                  <label for="fSub">Alamat aplikasi Anda <span class="opt">(opsional)</span></label>
+                  <div class="input-affix">
+                    <input id="fSub" name="subdomain" data-subcheck="subHint" type="text" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="namausaha" />
+                    <span class="affix">.hub.xpanca.com</span>
+                  </div>
+                  <div class="field-error" data-err="subdomain"></div>
+                  <div class="hint" id="subHint">Kosongkan bila ingin dibuat otomatis dari nama usaha.</div>
                 </div>
               </div>
 
@@ -268,9 +208,9 @@
       <i class="bi bi-whatsapp"></i>
     </a>
 
-    <script src="assets/js/config.js?v=20261023-3"></script>
-    <script src="assets/js/paket.js?v=20261023-3"></script>
-    <script src="assets/js/main.js?v=20261023-3"></script>
-    <script src="assets/js/daftar.js?v=20261023-3"></script>
+    <script src="assets/js/config.js?v=20261026-1"></script>
+    <script src="assets/js/paket.js?v=20261026-1"></script>
+    <script src="assets/js/main.js?v=20261026-1"></script>
+    <script src="assets/js/daftar.js?v=20261026-1"></script>
   </body>
 </html>
