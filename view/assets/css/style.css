@@ -1,28 +1,35 @@
 /* HUB by Xpanca — situs perusahaan.
-   Warna diambil dari logo HUB (assets/images/logo.png):
-   navy tulisan "HUB", biru rantai, oranye simpul tengah. */
+   Latar & warna merek mengikuti aplikasi HUB (sidebar web-hub-v2/v3: gradasi
+   hijau toska #008496 → #009688), supaya situs & aplikasi terasa satu produk.
+   Oranye simpul logo tetap jadi aksen: tombol utama, sorotan, lencana. */
 
 :root {
-  --navy: #1f3a68;
-  --navy-900: #13264a;
-  --blue: #2b8bc0;
-  --blue-50: #eaf4fa;
-  --orange: #e8541c;
-  --orange-600: #cc4613;
-  --orange-50: #fdf0ea;
+  /* brand = toska aplikasi HUB; accent = oranye logo (tombol utama, sorotan). */
+  --brand-dark: #006d77;
+  --brand-900: #0b3d42;
+  --brand: #008496;
+  --brand-50: #d9efec;
+  --accent: #e8541c;
+  --accent-600: #cc4613;
+  --accent-50: #fdf0ea;
 
-  --ink: #14213a;
-  --ink-2: #44506a;
-  --ink-3: #6b7590;
-  --line: #e3e8f0;
+  --ink: #132a2c;
+  --ink-2: #445a5c;
+  --ink-3: #62777a;
+  --line: #e0eaea;
   --bg: #ffffff;
-  --bg-soft: #f5f8fc;
+  --bg-soft: #eaf5f2;
+  /* Latar hero beranda & kepala halaman Daftar: hijau muda + semburat oranye. */
+  --bg-hero:
+    radial-gradient(700px 380px at -10% 110%, var(--accent-50), transparent 70%),
+    radial-gradient(900px 420px at 85% -10%, #c4e6e1, transparent 70%),
+    linear-gradient(160deg, #dcf0ec 0%, #eef7f5 55%, #f7fbfa 100%);
   --ok: #138a5a;
 
   --radius: 14px;
   --radius-sm: 10px;
-  --shadow-sm: 0 1px 2px rgba(19, 38, 74, 0.06), 0 1px 3px rgba(19, 38, 74, 0.08);
-  --shadow: 0 10px 30px -12px rgba(19, 38, 74, 0.25);
+  --shadow-sm: 0 1px 2px rgba(11, 61, 66, 0.06), 0 1px 3px rgba(11, 61, 66, 0.08);
+  --shadow: 0 10px 30px -12px rgba(11, 61, 66, 0.25);
   --container: 1160px;
   --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
@@ -54,7 +61,7 @@ img {
 }
 
 a {
-  color: var(--blue);
+  color: var(--brand);
   text-decoration: none;
 }
 a:hover {
@@ -67,7 +74,7 @@ h3,
 h4 {
   margin: 0 0 0.5em;
   line-height: 1.2;
-  color: var(--navy-900);
+  color: var(--brand-900);
   letter-spacing: -0.015em;
 }
 
@@ -76,7 +83,7 @@ p {
 }
 
 :focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--blue) 55%, transparent);
+  outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -92,7 +99,7 @@ p {
   position: absolute;
   left: -999px;
   top: 8px;
-  background: var(--navy);
+  background: var(--brand-dark);
   color: #fff;
   padding: 8px 14px;
   border-radius: 8px;
@@ -128,27 +135,27 @@ p {
   transform: none;
 }
 .btn-primary {
-  background: var(--orange);
+  background: var(--accent);
   color: #fff;
   box-shadow: 0 6px 16px -6px rgba(232, 84, 28, 0.6);
 }
 .btn-primary:hover {
-  background: var(--orange-600);
+  background: var(--accent-600);
 }
 .btn-outline {
   background: #fff;
-  color: var(--navy);
+  color: var(--brand-dark);
   border-color: var(--line);
 }
 .btn-outline:hover {
-  border-color: var(--navy);
+  border-color: var(--brand-dark);
 }
-.btn-navy {
-  background: var(--navy);
+.btn-dark {
+  background: var(--brand-dark);
   color: #fff;
 }
-.btn-navy:hover {
-  background: var(--navy-900);
+.btn-dark:hover {
+  background: var(--brand-900);
 }
 .btn-block {
   width: 100%;
@@ -172,7 +179,7 @@ p {
 }
 .site-header.is-scrolled {
   border-bottom-color: var(--line);
-  box-shadow: 0 4px 18px -12px rgba(19, 38, 74, 0.3);
+  box-shadow: 0 4px 18px -12px rgba(11, 61, 66, 0.3);
 }
 .nav {
   display: flex;
@@ -184,7 +191,7 @@ p {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--navy);
+  color: var(--brand-dark);
   text-decoration: none;
 }
 .brand:hover {
@@ -223,7 +230,7 @@ p {
   border-radius: 8px;
 }
 .nav-links a:hover {
-  color: var(--navy);
+  color: var(--brand-dark);
   background: var(--bg-soft);
   text-decoration: none;
 }
@@ -239,7 +246,7 @@ p {
   width: 44px;
   height: 44px;
   font-size: 22px;
-  color: var(--navy);
+  color: var(--brand-dark);
   cursor: pointer;
 }
 
@@ -249,9 +256,7 @@ p {
   position: relative;
   overflow: hidden;
   padding: 72px 0 88px;
-  background:
-    radial-gradient(900px 420px at 85% -10%, var(--blue-50), transparent 70%),
-    radial-gradient(700px 380px at -10% 110%, var(--orange-50), transparent 70%);
+  background: var(--bg-hero);
 }
 .hero-grid {
   display: grid;
@@ -267,14 +272,14 @@ p {
   border-radius: 999px;
   background: #fff;
   border: 1px solid var(--line);
-  color: var(--navy);
+  color: var(--brand-dark);
   font-size: 13px;
   font-weight: 700;
   margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
 }
 .eyebrow i {
-  color: var(--orange);
+  color: var(--accent);
 }
 .hero h1 {
   font-size: clamp(34px, 5vw, 54px);
@@ -282,7 +287,7 @@ p {
   margin-bottom: 18px;
 }
 .hero h1 .hl {
-  color: var(--orange);
+  color: var(--accent);
 }
 .hero-lead {
   font-size: 18px;
@@ -350,7 +355,7 @@ p {
   gap: 14px;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
-  background: var(--navy);
+  background: var(--brand-dark);
   color: #fff;
 }
 .trx-ic {
@@ -387,7 +392,7 @@ p {
   margin: 10px 0;
 }
 .flow-arrow i {
-  color: var(--orange);
+  color: var(--accent);
   font-size: 18px;
 }
 .outputs {
@@ -413,12 +418,12 @@ p {
   font-size: 16px;
 }
 .out-ic.blue {
-  background: var(--blue-50);
-  color: var(--blue);
+  background: var(--brand-50);
+  color: var(--brand);
 }
 .out-ic.orange {
-  background: var(--orange-50);
-  color: var(--orange);
+  background: var(--accent-50);
+  color: var(--accent);
 }
 .out-ic.green {
   background: #e6f5ee;
@@ -427,7 +432,7 @@ p {
 .out-t {
   font-weight: 700;
   font-size: 14px;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .out-d {
   font-size: 13px;
@@ -474,7 +479,7 @@ p {
 }
 .kicker {
   display: inline-block;
-  color: var(--orange);
+  color: var(--accent);
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.08em;
@@ -509,7 +514,7 @@ p {
 .step-no {
   font-weight: 800;
   font-size: 14px;
-  color: var(--orange);
+  color: var(--accent);
   letter-spacing: 0.06em;
   margin-bottom: 14px;
   display: block;
@@ -533,8 +538,8 @@ p {
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
-  color: var(--navy);
-  background: var(--blue-50);
+  color: var(--brand-dark);
+  background: var(--brand-50);
   border-radius: 999px;
   padding: 3px 10px;
 }
@@ -554,7 +559,7 @@ p {
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 .module:hover {
-  border-color: color-mix(in srgb, var(--blue) 40%, var(--line));
+  border-color: color-mix(in srgb, var(--brand) 40%, var(--line));
   box-shadow: var(--shadow);
   transform: translateY(-2px);
 }
@@ -565,13 +570,13 @@ p {
   display: grid;
   place-items: center;
   font-size: 22px;
-  background: var(--blue-50);
-  color: var(--blue);
+  background: var(--brand-50);
+  color: var(--brand);
   margin-bottom: 16px;
 }
 .module:nth-child(even) .module-ic {
-  background: var(--orange-50);
-  color: var(--orange);
+  background: var(--accent-50);
+  color: var(--accent);
 }
 .module h3 {
   font-size: 18px;
@@ -596,7 +601,7 @@ p {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--blue);
+  background: var(--brand);
   opacity: 0.6;
 }
 
@@ -618,13 +623,13 @@ p {
 .product-top {
   padding: 28px 26px 22px;
   color: #fff;
-  background: var(--navy);
+  background: var(--brand-dark);
 }
 .product:nth-child(2) .product-top {
-  background: linear-gradient(135deg, var(--blue), #1f6f9c);
+  background: linear-gradient(135deg, var(--brand), #009688);
 }
 .product:nth-child(3) .product-top {
-  background: linear-gradient(135deg, var(--orange), #b9400f);
+  background: linear-gradient(135deg, var(--accent), #b9400f);
 }
 .product-top i {
   font-size: 30px;
@@ -690,7 +695,7 @@ p {
 .ledger-cap {
   padding: 12px 16px;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--brand-dark);
   border-bottom: 1px solid var(--line);
   background: var(--bg-soft);
 }
@@ -718,7 +723,7 @@ p {
 .ledger tr:last-child td {
   border-bottom: 0;
   font-weight: 800;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .features {
   display: grid;
@@ -740,7 +745,7 @@ p {
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: var(--navy);
+  background: var(--brand-dark);
   color: #fff;
   font-size: 18px;
 }
@@ -772,7 +777,7 @@ p {
   padding: 30px 28px;
 }
 .plan.is-featured {
-  border: 2px solid var(--orange);
+  border: 2px solid var(--accent);
   box-shadow: var(--shadow);
 }
 .plan-badge {
@@ -780,7 +785,7 @@ p {
   top: -13px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--orange);
+  background: var(--accent);
   color: #fff;
   font-size: 12px;
   font-weight: 800;
@@ -802,7 +807,7 @@ p {
   align-items: baseline;
   gap: 4px;
   margin-bottom: 4px;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .price .cur {
   font-weight: 700;
@@ -848,14 +853,14 @@ p {
   padding: 0 20px;
 }
 .faq details[open] {
-  border-color: color-mix(in srgb, var(--blue) 35%, var(--line));
+  border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
 }
 .faq summary {
   cursor: pointer;
   list-style: none;
   padding: 18px 0;
   font-weight: 700;
-  color: var(--navy-900);
+  color: var(--brand-900);
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -866,7 +871,7 @@ p {
 .faq summary::after {
   content: "\F4FE"; /* bi-plus-lg */
   font-family: "bootstrap-icons";
-  color: var(--orange);
+  color: var(--accent);
   flex: none;
   transition: transform 0.2s;
 }
@@ -881,7 +886,7 @@ p {
 /* ===================== Kontak / Demo ===================== */
 
 .contact {
-  background: var(--navy);
+  background: var(--brand-dark);
   color: #fff;
   position: relative;
   overflow: hidden;
@@ -894,7 +899,7 @@ p {
   right: -160px;
   top: -200px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(43, 139, 192, 0.45), transparent 70%);
+  background: radial-gradient(circle, rgba(0, 150, 136, 0.45), transparent 70%);
 }
 .contact-grid {
   position: relative;
@@ -1001,7 +1006,7 @@ p {
   font-weight: 700;
   font-size: 14px;
   margin-bottom: 6px;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .field label .opt {
   color: var(--ink-3);
@@ -1015,7 +1020,7 @@ p {
   font-size: 15px;
   color: var(--ink);
   padding: 11px 13px;
-  border: 1px solid #cfd7e3;
+  border: 1px solid #cfdcdc;
   border-radius: 10px;
   background: #fff;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -1028,8 +1033,8 @@ p {
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 22%, transparent);
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent);
 }
 .field.has-error input,
 .field.has-error select,
@@ -1077,7 +1082,7 @@ p {
 /* ===================== Footer ===================== */
 
 .site-footer {
-  background: var(--navy-900);
+  background: var(--brand-900);
   color: rgba(255, 255, 255, 0.72);
   padding: 56px 0 28px;
   font-size: 14px;
@@ -1211,9 +1216,7 @@ p {
 
 .page-head {
   padding: 48px 0 36px;
-  background:
-    radial-gradient(800px 300px at 90% -20%, var(--blue-50), transparent 70%),
-    radial-gradient(600px 260px at -10% 120%, var(--orange-50), transparent 70%);
+  background: var(--bg-hero);
   border-bottom: 1px solid var(--line);
 }
 .crumbs {
@@ -1252,7 +1255,7 @@ p {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--navy);
+  background: var(--brand-dark);
   color: #fff;
   font-size: 12px;
   margin-right: 6px;
@@ -1288,8 +1291,8 @@ p {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--orange-50);
-  color: var(--orange);
+  background: var(--accent-50);
+  color: var(--accent);
   font-size: 14px;
   font-weight: 800;
   flex: none;
@@ -1326,15 +1329,15 @@ p {
   transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
 }
 .plan-opt:hover .plan-opt-body {
-  border-color: color-mix(in srgb, var(--blue) 45%, var(--line));
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
 }
 .plan-opt input:checked + .plan-opt-body {
-  border-color: var(--orange);
-  background: var(--orange-50);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 16%, transparent);
+  border-color: var(--accent);
+  background: var(--accent-50);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 .plan-opt input:focus-visible + .plan-opt-body {
-  outline: 3px solid color-mix(in srgb, var(--blue) 55%, transparent);
+  outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent);
   outline-offset: 2px;
 }
 .plan-opt-name {
@@ -1343,13 +1346,13 @@ p {
   align-items: center;
   gap: 6px;
   font-weight: 800;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .plan-opt-tag {
   font-size: 10px;
   font-weight: 800;
   color: #fff;
-  background: var(--orange);
+  background: var(--accent);
   border-radius: 999px;
   padding: 2px 7px;
   white-space: nowrap;
@@ -1400,11 +1403,11 @@ p {
 }
 .seg input:checked + span {
   background: #fff;
-  color: var(--navy-900);
+  color: var(--brand-900);
   box-shadow: var(--shadow-sm);
 }
 .seg input:focus-visible + span {
-  outline: 3px solid color-mix(in srgb, var(--blue) 55%, transparent);
+  outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent);
 }
 .seg small {
   font-size: 11px;
@@ -1413,6 +1416,11 @@ p {
   background: #e6f5ee;
   border-radius: 999px;
   padding: 1px 7px;
+}
+/* Periode yang tidak dijual untuk paket terpilih (harga 0 di katalog). */
+.seg label.is-disabled span {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 .periode-info {
   margin: 10px 0 0;
@@ -1433,7 +1441,7 @@ p {
   display: flex;
   align-items: center;
   padding: 0 12px;
-  border: 1px solid #cfd7e3;
+  border: 1px solid #cfdcdc;
   border-left: 0;
   border-radius: 0 10px 10px 0;
   background: var(--bg-soft);
@@ -1472,7 +1480,7 @@ p {
   width: 18px;
   height: 18px;
   flex: none;
-  accent-color: var(--orange);
+  accent-color: var(--accent);
 }
 
 /* Ringkasan pesanan (menempel saat digulir di desktop). */
@@ -1497,7 +1505,7 @@ p {
   border-bottom: 1px dashed var(--line);
 }
 .sum-row b {
-  color: var(--navy-900);
+  color: var(--brand-900);
   text-align: right;
 }
 .sum-total {
@@ -1509,12 +1517,12 @@ p {
 }
 .sum-total span {
   font-weight: 700;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .sum-total b {
   font-size: 24px;
   font-weight: 800;
-  color: var(--navy-900);
+  color: var(--brand-900);
   white-space: nowrap;
 }
 .sum-note {
@@ -1534,7 +1542,7 @@ p {
   align-items: flex-start;
 }
 .sum-help i {
-  color: var(--blue);
+  color: var(--brand);
   font-size: 18px;
 }
 
@@ -1575,16 +1583,16 @@ p {
   padding: 10px 16px;
   border-radius: 12px;
   background: var(--bg-soft);
-  border: 1px dashed #b9c4d6;
+  border: 1px dashed #b5c7c8;
   font-weight: 800;
   font-size: 20px;
   letter-spacing: 0.04em;
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .done-code button {
   border: 0;
   background: none;
-  color: var(--blue);
+  color: var(--brand);
   cursor: pointer;
   font-size: 18px;
   padding: 2px;
@@ -1597,11 +1605,11 @@ p {
   color: var(--ink-2);
 }
 .done .next-steps b {
-  color: var(--navy-900);
+  color: var(--brand-900);
 }
 .done .ns-no {
-  background: var(--orange-50);
-  color: var(--orange);
+  background: var(--accent-50);
+  color: var(--accent);
 }
 .done-actions {
   display: flex;
@@ -1647,7 +1655,7 @@ p {
     right: 0;
     background: #fff;
     border-bottom: 1px solid var(--line);
-    box-shadow: 0 14px 24px -16px rgba(19, 38, 74, 0.35);
+    box-shadow: 0 14px 24px -16px rgba(11, 61, 66, 0.35);
     padding: 12px 20px 20px;
   }
   .nav-menu.is-open {
