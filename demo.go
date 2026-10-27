@@ -155,6 +155,8 @@ func demoHandler(store *jsonlStore, hc *hubControl) fiber.Handler {
 				Phone:        req.Phone,
 				FullName:     req.Name,
 				Subdomain:    req.Subdomain,
+				Intent:       "trial",
+				Package:      req.Package, // kosong = "Belum tahu"
 			}, &rec.hubctlResult)
 			if rej != "" {
 				return respond(c, fiber.StatusUnprocessableEntity, rej, nil,

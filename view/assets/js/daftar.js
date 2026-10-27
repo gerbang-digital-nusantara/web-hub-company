@@ -1,7 +1,7 @@
 /* Halaman Daftar Berlangganan (daftar.html).
  *
- * Paket & harga dari paket.json lewat HubPaket (paket.js). Ringkasan di
- * samping hanya tampilan — server menghitung ulang estimasi dari paket.json
+ * Paket & harga dari katalog hub-control lewat HubPaket (paket.js). Ringkasan
+ * di samping hanya tampilan — server menghitung ulang estimasi dari katalog
  * yang sama dan itulah yang disimpan (daftar.go). */
 (function () {
   "use strict";
@@ -18,9 +18,16 @@
   const status = $("#daftarStatus");
   let data = null;
 
+  // id = code hub-control; nama juga diterima supaya tautan lama
+  // ?paket=bisnis tetap memilih "Bisnis" (cermin paketFile.find).
+  const cariPaket = (id) =>
+    data?.paket.find((p) => p.id === id) ||
+    data?.paket.find((p) => String(p.nama).toLowerCase() === String(id || "").toLowerCase()) ||
+    null;
+
   const paketTerpilih = () => {
     const id = form.querySelector('input[name="paket"]:checked')?.value;
-    return data?.paket.find((p) => p.id === id) || null;
+    return cariPaket(id);
   };
   const periodeTerpilih = () => form.querySelector('input[name="periode"]:checked')?.value || "";
 
@@ -29,7 +36,7 @@
   function renderPilihan() {
     const minta = new URLSearchParams(location.search).get("paket");
     const awal =
-      data.paket.find((p) => p.id === minta) || data.paket.find((p) => p.rekomendasi) || data.paket[0];
+      cariPaket(minta) || data.paket.find((p) => p.rekomendasi) || data.paket[0];
     pick.innerHTML = data.paket
       .map(
         (p) => `
@@ -40,19 +47,38 @@
               p.rekomendasi ? '<span class="plan-opt-tag">Rekomendasi</span>' : ""
             }</span>
             <span class="plan-opt-price">${
-              P.penawaran(p) ? "Harga penawaran" : `${P.rupiah(p.harga_bulanan)}/bulan`
+              P.penawaran(p)
+                ? "Harga penawaran"
+                : P.tersedia(p, "bulanan")
+                  ? `${P.rupiah(p.harga_bulanan)}/bulan`
+                  : `${P.rupiah(p.harga_tahunan)}/tahun`
             }</span>
             <span class="plan-opt-for">${P.esc(p.untuk)}</span>
           </span>
         </label>`,
       )
       .join("");
+  }
 
-    const hemat = Number(data.diskon_tahunan_bulan || 0);
+  // Periode yang tidak dijual untuk paket ini (harga 0) dimatikan; bila
+  // pilihan sekarang mati, pindah ke periode lain yang tersedia.
+  function aturPeriode(p) {
+    const radios = $$('input[name="periode"]', form);
+    radios.forEach((r) => {
+      const ok = P.tersedia(p, r.value);
+      r.disabled = !ok;
+      r.closest("label")?.classList.toggle("is-disabled", !ok);
+    });
+    const cur = radios.find((r) => r.checked);
+    if (!cur || cur.disabled) {
+      const lain = radios.find((r) => !r.disabled);
+      if (lain) lain.checked = true;
+    }
     const badge = $("#hematBadge");
-    if (badge && hemat > 0) {
-      badge.textContent = `hemat ${hemat} bln`;
-      badge.hidden = false;
+    if (badge) {
+      const h = P.tersedia(p, "tahunan") ? P.hemat(p) : "";
+      badge.textContent = h ? `hemat ${h.replace(" bulan", " bln")}` : "";
+      badge.hidden = !h;
     }
   }
 
@@ -62,6 +88,7 @@
     const p = paketTerpilih();
     if (!p) return;
     const tawar = P.penawaran(p);
+    if (!tawar) aturPeriode(p);
     const periode = periodeTerpilih();
 
     $("#periodeWrap").hidden = tawar;
@@ -82,11 +109,11 @@
       $("#sumTotal").textContent = P.rupiah(total);
       $("#sumNote").textContent = "Belum termasuk PPN. Tagihan dikirim setelah pendaftaran diverifikasi.";
       if (info) {
-        const hemat = Number(data.diskon_tahunan_bulan || 0);
+        const hematRp = P.tersedia(p, "bulanan") ? p.harga_bulanan * 12 - p.harga_tahunan : 0;
         info.textContent =
           periode === "tahunan"
             ? `${P.rupiah(total)} per tahun — setara ${P.rupiah(Math.round(total / 12))}/bulan${
-                hemat > 0 ? `, hemat ${P.rupiah(p.harga_bulanan * hemat)}` : ""
+                hematRp > 0 ? `, hemat ${P.rupiah(hematRp)}` : ""
               }.`
             : `${P.rupiah(total)} ditagih setiap bulan.`;
       }
@@ -151,9 +178,10 @@
   // Cermin aturan daftar.go; server tetap pemutus akhir.
   function validate(d) {
     const e = {};
-    const p = data?.paket.find((x) => x.id === d.paket);
+    const p = cariPaket(d.paket);
     if (!p) e.paket = "Pilih paket";
     else if (!P.penawaran(p) && !["bulanan", "tahunan"].includes(d.periode)) e.periode = "Pilih periode pembayaran";
+    else if (!P.penawaran(p) && !P.tersedia(p, d.periode)) e.periode = `Paket ini tidak tersedia untuk periode ${d.periode}`;
     if (!d.nama_pic) e.nama_pic = "Nama wajib diisi";
     if (!d.nama_usaha) e.nama_usaha = "Nama usaha wajib diisi";
     if (d.subdomain && !window.HubSub?.valid(d.subdomain)) e.subdomain = window.HubSub.MSG_FORMAT;
@@ -199,7 +227,7 @@
     if (window.HUB_PREVIEW) {
       // Tanpa server (GitHub Pages): hasil dihitung di browser dari paket.json
       // yang sama, supaya alur sampai layar "diterima" tetap bisa ditinjau.
-      const p = data.paket.find((x) => x.id === d.paket);
+      const p = cariPaket(d.paket);
       const tawar = P.penawaran(p);
       tampilkanSelesai(
         {

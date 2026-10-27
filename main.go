@@ -155,9 +155,10 @@ func buildApp(webRoot string, st stores, hc *hubControl) *fiber.App {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 
-	paketPath := filepath.Join(webRoot, "assets", "data", "paket.json")
+	kat := newKatalog(filepath.Join(webRoot, "assets", "data", "paket.json"))
+	app.Get("/api/paket", perMinute(60), paketHandler(kat))
 	app.Post("/api/demo", perMinute(5), demoHandler(st.demo, hc))
-	app.Post("/api/daftar", perMinute(5), daftarHandler(st.daftar, paketPath, hc))
+	app.Post("/api/daftar", perMinute(5), daftarHandler(st.daftar, kat, hc))
 	cekSub := subdomainHandler(hc)
 	app.Get("/api/subdomain", perMinute(30), cekSub)
 	app.Get("/api/demo/subdomain", perMinute(30), cekSub) // nama lama
@@ -192,8 +193,9 @@ func main() {
 	if !fileExists(filepath.Join(webRoot, "index.html")) {
 		log.Fatalf("index.html tidak ditemukan di %s (atur WEB_ROOT)", webRoot)
 	}
-	// Gagal cepat bila paket.json rusak — lebih baik tidak jalan daripada
-	// form daftar menolak semua pendaftar.
+	// Gagal cepat bila paket.json (cadangan katalog hub-control) rusak —
+	// lebih baik tidak jalan daripada form daftar menolak semua pendaftar
+	// saat hub-control tidak terjangkau.
 	if _, err := loadPaket(filepath.Join(webRoot, "assets", "data", "paket.json")); err != nil {
 		log.Fatalf("paket.json: %v", err)
 	}

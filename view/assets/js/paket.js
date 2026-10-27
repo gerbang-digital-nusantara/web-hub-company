@@ -1,17 +1,34 @@
-/* Paket langganan — dibaca dari /assets/data/paket.json (sumber tunggal,
- * juga dibaca server untuk validasi & estimasi). Dipakai beranda (kartu
- * Harga) dan halaman Daftar. */
+/* Paket langganan — katalog hub-control (menu Paket & Harga), dibaca server
+ * dan disajikan di /api/paket (sama dengan yang dipakai validasi & estimasi
+ * di daftar.go). Pratinjau GitHub Pages (tanpa server) memakai cadangan
+ * assets/data/paket.json. Dipakai beranda (kartu Harga) dan halaman Daftar. */
 (function () {
   "use strict";
 
   let cache = null;
 
+  // paket.json (format lama) → bentuk /api/paket: harga_tahunan & penawaran.
+  function normalisasi(d) {
+    const diskon = Number(d.diskon_tahunan_bulan || 0);
+    d.paket.forEach((p) => {
+      if (p.harga_tahunan == null) p.harga_tahunan = Number(p.harga_bulanan || 0) * (12 - diskon);
+      if (p.penawaran == null) p.penawaran = !(Number(p.harga_bulanan) > 0);
+    });
+    return d;
+  }
+
   function load() {
     if (!cache) {
-      cache = fetch("assets/data/paket.json", { cache: "no-cache" })
+      const url = window.HUB_PREVIEW ? "assets/data/paket.json" : "api/paket";
+      cache = fetch(url, { cache: "no-cache" })
         .then((r) => {
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           return r.json();
+        })
+        .then((j) => {
+          const d = j && Array.isArray(j.paket) ? j : j && j.data;
+          if (!d || !Array.isArray(d.paket) || !d.paket.length) throw new Error("katalog kosong");
+          return normalisasi(d);
         })
         .catch((e) => {
           cache = null; // boleh dicoba lagi
@@ -29,13 +46,25 @@
     return String(n);
   };
 
-  const penawaran = (p) => !(Number(p?.harga_bulanan) > 0);
+  const penawaran = (p) => !!p?.penawaran;
+  // 0 = paket tidak dijual per periode itu.
+  const tersedia = (p, periode) =>
+    Number(periode === "tahunan" ? p?.harga_tahunan : p?.harga_bulanan) > 0;
 
-  // Harus sama dengan paketFile.tagihan di paket.go.
+  // Harus sama dengan paketFile.tagihan di paket.go. `data` tidak dipakai
+  // lagi (dulu diskon tahunan global), dipertahankan supaya pemanggil tetap.
   function hitungTagihan(data, p, periode) {
     if (penawaran(p)) return 0;
-    const bln = Number(p.harga_bulanan);
-    return periode === "tahunan" ? bln * (12 - Number(data.diskon_tahunan_bulan || 0)) : bln;
+    return Number(periode === "tahunan" ? p.harga_tahunan : p.harga_bulanan) || 0;
+  }
+
+  // Hemat bayar tahunan dibanding 12× bulanan: "2 bulan" bila pas kelipatan
+  // harga bulanan, selain itu nominal rupiah. "" bila tidak hemat.
+  function hemat(p) {
+    const bln = Number(p.harga_bulanan) || 0;
+    const sel = bln * 12 - (Number(p.harga_tahunan) || 0);
+    if (!bln || !p.harga_tahunan || sel <= 0) return "";
+    return sel % bln === 0 ? `${sel / bln} bulan` : rupiah(sel);
   }
 
   const esc = (v) =>
@@ -46,19 +75,24 @@
   // Kartu Harga di beranda. Tombol tiap paket menuju halaman Daftar dengan
   // paket itu terpilih.
   function renderKartu(el, data) {
-    const hemat = Number(data.diskon_tahunan_bulan || 0);
     el.innerHTML = data.paket
       .map((p) => {
+        const h = hemat(p);
+        const bulanan = tersedia(p, "bulanan");
         const harga = penawaran(p)
           ? `<div class="price"><span class="amt amt-sm">Hubungi kami</span></div>
              <div class="price-note">Penawaran disesuaikan</div>`
-          : `<div class="price"><span class="cur">Rp</span><span class="amt">${ringkas(p.harga_bulanan)}</span><span class="per">/bulan</span></div>
+          : `<div class="price"><span class="cur">Rp</span><span class="amt">${ringkas(
+              bulanan ? p.harga_bulanan : p.harga_tahunan,
+            )}</span><span class="per">/${bulanan ? "bulan" : "tahun"}</span></div>
              <div class="price-note">${
-               hemat > 0
-                 ? `atau ${rupiah(hitungTagihan(data, p, "tahunan"))}/tahun — hemat ${hemat} bulan`
-                 : "Ditagih bulanan"
+               !bulanan
+                 ? "Ditagih tahunan"
+                 : tersedia(p, "tahunan")
+                   ? `atau ${rupiah(p.harga_tahunan)}/tahun${h ? ` — hemat ${h}` : ""}`
+                   : "Ditagih bulanan"
              }</div>`;
-        const btnKelas = p.rekomendasi ? "btn-primary" : penawaran(p) ? "btn-navy" : "btn-outline";
+        const btnKelas = p.rekomendasi ? "btn-primary" : penawaran(p) ? "btn-dark" : "btn-outline";
         const btnLabel = penawaran(p) ? "Ajukan Penawaran" : `Daftar ${esc(p.nama)}`;
         return `
           <article class="plan${p.rekomendasi ? " is-featured" : ""}">
@@ -75,5 +109,5 @@
       .join("");
   }
 
-  window.HubPaket = { load, rupiah, ringkas, penawaran, hitungTagihan, esc, renderKartu };
+  window.HubPaket = { load, rupiah, ringkas, penawaran, tersedia, hitungTagihan, hemat, esc, renderKartu };
 })();

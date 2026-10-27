@@ -19,9 +19,9 @@ import (
 //
 // Dicatat ke DATA_DIR/pendaftaran.jsonl, dan — bila HUBCTL_* diisi — ikut
 // didaftarkan ke hub-control seperti form Coba Gratis, supaya semua calon
-// klien masuk satu antrean di menu Tenant dan admin cukup Approve (paket &
-// periode belum bisa dikirim lewat Partner API; tercatat di jsonl dan perlu
-// dukungan dari sisi hub-control). `Website` = honeypot, sama seperti form demo.
+// klien masuk satu antrean di menu Tenant dan admin cukup Approve. Paket &
+// periode ikut dikirim (intent "subscribe", package = nama paket, period).
+// `Website` = honeypot, sama seperti form demo.
 type daftarRequest struct {
 	Paket   string `json:"paket"`
 	Periode string `json:"periode"` // "bulanan" | "tahunan"; diabaikan untuk paket penawaran
@@ -40,7 +40,7 @@ type daftarRecord struct {
 	Kode string `json:"kode"`
 	daftarRequest
 	NamaPaket string `json:"nama_paket"`
-	// Estimasi tagihan per periode (belum PPN) menurut paket.json SAAT
+	// Estimasi tagihan per periode (belum PPN) menurut katalog paket SAAT
 	// mendaftar — supaya tetap terlacak walau harga diubah kemudian.
 	Estimasi   int64     `json:"estimasi"`
 	Status     string    `json:"status"`
@@ -67,8 +67,10 @@ func (d *daftarRequest) validate(pf *paketFile) map[string]string {
 	p := pf.find(d.Paket)
 	if p == nil {
 		errs["paket"] = "Pilih paket"
-	} else if p.HargaBulanan > 0 && d.Periode != "bulanan" && d.Periode != "tahunan" {
+	} else if !p.Penawaran && d.Periode != "bulanan" && d.Periode != "tahunan" {
 		errs["periode"] = "Pilih periode pembayaran"
+	} else if !p.Penawaran && !p.tersedia(d.Periode) {
+		errs["periode"] = "Paket ini tidak tersedia untuk periode " + d.Periode
 	}
 	if d.NamaPIC == "" {
 		errs["nama_pic"] = "Nama wajib diisi"
@@ -115,7 +117,7 @@ func kodeDaftar(t time.Time) string {
 	return "HUB-" + t.Format("060102") + "-" + string(b)
 }
 
-func daftarHandler(store *jsonlStore, paketPath string, hc *hubControl) fiber.Handler {
+func daftarHandler(store *jsonlStore, kat *katalog, hc *hubControl) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var req daftarRequest
 		if err := c.BodyParser(&req); err != nil {
@@ -127,9 +129,9 @@ func daftarHandler(store *jsonlStore, paketPath string, hc *hubControl) fiber.Ha
 			return respond(c, fiber.StatusOK, "Pendaftaran diterima", fiber.Map{"kode": kodeDaftar(now)}, nil)
 		}
 
-		pf, err := loadPaket(paketPath)
+		pf, err := kat.get(c.UserContext())
 		if err != nil {
-			log.Printf("[daftar] paket.json: %v", err)
+			log.Printf("[daftar] paket: %v", err)
 			return respond(c, fiber.StatusInternalServerError, "Pendaftaran sedang tidak tersedia, silakan hubungi kami lewat WhatsApp.", nil, nil)
 		}
 
@@ -139,7 +141,8 @@ func daftarHandler(store *jsonlStore, paketPath string, hc *hubControl) fiber.Ha
 		}
 
 		p := pf.find(req.Paket)
-		if p.HargaBulanan <= 0 {
+		req.Paket = p.ID // tautan lama ?paket=bisnis → code hub-control
+		if p.Penawaran {
 			req.Periode = "" // paket penawaran: periode ditentukan saat negosiasi
 		}
 		rec := daftarRecord{
@@ -160,6 +163,9 @@ func daftarHandler(store *jsonlStore, paketPath string, hc *hubControl) fiber.Ha
 				Phone:        req.Phone,
 				FullName:     req.NamaPIC,
 				Subdomain:    req.Subdomain,
+				Intent:       "subscribe",
+				Package:      p.Nama,
+				Period:       req.Periode, // kosong untuk paket penawaran
 			}, &rec.hubctlResult)
 			if rej != "" {
 				return respond(c, fiber.StatusUnprocessableEntity, rej, nil,
@@ -192,7 +198,7 @@ func daftarHandler(store *jsonlStore, paketPath string, hc *hubControl) fiber.Ha
 			"paket":      p.Nama,
 			"periode":    req.Periode,
 			"estimasi":   rec.Estimasi,
-			"penawaran":  p.HargaBulanan <= 0,
+			"penawaran":  p.Penawaran,
 			"nama_usaha": req.NamaUsaha,
 			"email":      req.Email,
 		}, nil)

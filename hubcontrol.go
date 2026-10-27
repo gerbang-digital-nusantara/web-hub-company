@@ -67,6 +67,12 @@ type hubctlRegister struct {
 	NPWP          string `json:"npwp,omitempty"`
 	Address       string `json:"address,omitempty"`
 	Subdomain     string `json:"subdomain,omitempty"`
+	// Paket produk: intent "trial" (Coba Gratis) | "subscribe" (Daftar),
+	// package = nama paket di paket.json (mis. "Bisnis"), period =
+	// "bulanan" | "tahunan" (hub-control juga menerima monthly/yearly).
+	Intent  string `json:"intent,omitempty"`
+	Package string `json:"package,omitempty"`
+	Period  string `json:"period,omitempty"`
 }
 
 func (h *hubControl) sign(ts, method, path string, body []byte) string {

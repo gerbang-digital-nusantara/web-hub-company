@@ -1,5 +1,5 @@
 {
-  "_catatan": "SATU-SATUNYA sumber paket & harga (kartu Harga di beranda, halaman Daftar, dan validasi server). Harga dalam rupiah per bulan, belum PPN. harga_bulanan 0 = lewat penawaran. Bayar tahunan = harga_bulanan x (12 - diskon_tahunan_bulan). ANGKA MASIH CONTOH - ganti dengan paket resmi.",
+  "_catatan": "CADANGAN katalog paket. Sumber utama = hub-control menu Paket & Harga (GET /api/public/pricing, dibaca server lewat /api/paket). Berkas ini hanya dipakai bila hub-control tidak terjangkau dan oleh pratinjau GitHub Pages - samakan dengan panel bila harga berubah. id = code paket di hub-control. Harga rupiah per bulan, belum PPN; harga_bulanan 0 = lewat penawaran. Bayar tahunan = harga_bulanan x (12 - diskon_tahunan_bulan).",
   "diskon_tahunan_bulan": 2,
   "paket": [
     {
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "id": "bisnis",
+      "id": "business",
       "nama": "Bisnis",
       "untuk": "Untuk distributor & grosir multi-gudang",
       "harga_bulanan": 799000,

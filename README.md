@@ -51,14 +51,14 @@ main.go                     app Fiber: static view/, /healthz, rute API, cache h
 demo.go                     POST /api/demo   — form Coba Gratis, GET /api/subdomain
 hubcontrol.go               klien Partner API hub-control (HMAC) + aturan format subdomain
 daftar.go                   POST /api/daftar — form Daftar Berlangganan
-paket.go                    baca paket.json (validasi paket + estimasi tagihan)
+paket.go                    katalog paket dari hub-control (GET /api/paket, validasi + estimasi), cadangan paket.json
 view/index.html             beranda: Hero, Cara Kerja, Modul, Produk, Keunggulan, Harga, FAQ, Demo
 view/daftar.html            halaman Daftar Berlangganan (juga /daftar?paket=bisnis)
 view/404.html
-view/assets/data/paket.json SATU-SATUNYA sumber paket & harga — ISI DI SINI
+view/assets/data/paket.json CADANGAN katalog (hub-control mati / pratinjau Pages)
 view/assets/css/style.css   warna dari logo HUB (navy #1F3A68, biru #2B8BC0, oranye #E8541C)
 view/assets/js/config.js    nomor WhatsApp & email — ISI DI SINI
-view/assets/js/paket.js     muat paket.json, hitung tagihan, render kartu Harga
+view/assets/js/paket.js     muat /api/paket (pratinjau: paket.json), hitung tagihan, render kartu Harga
 view/assets/js/main.js      menu ponsel, kontak, animasi, form demo
 view/assets/js/daftar.js    halaman Daftar: pilih paket/periode, ringkasan, kirim
 data/demo-requests.jsonl    permintaan demo yang masuk (tidak di-commit)
@@ -69,16 +69,32 @@ data/pendaftaran.jsonl      pendaftaran berlangganan yang masuk (tidak di-commit
 
 1. **Kontak** — isi `whatsapp` dan `email` di `view/assets/js/config.js`. Selama kosong,
    tombol WhatsApp dan tautan email disembunyikan.
-2. **Harga** — angka di `view/assets/data/paket.json` masih **contoh**
-   (Starter Rp 299rb, Bisnis Rp 799rb, batas gudang/pengguna, diskon tahunan 2 bulan).
-   Berkas ini dibaca kartu Harga di beranda, halaman Daftar, *dan* server (estimasi
-   tagihan yang disimpan), jadi cukup diubah di satu tempat — tanpa restart.
+2. **Harga** — diatur admin di hub-control menu **Paket & Harga** (lihat *Katalog paket*
+   di bawah), bukan di situs ini. `view/assets/data/paket.json` hanya cadangan; samakan
+   dengan panel bila harga berubah.
 3. Setiap mengubah CSS/JS, naikkan `?v=` di tag `<link>`/`<script>` pada `index.html`
    dan `daftar.html` (aset di-cache browser 1 hari).
 
+## Katalog paket (hub-control)
+
+Paket & harga dibaca dari `GET {HUBCTL_BASE_URL}/api/public/pricing` (tanpa API Key;
+hanya paket berstatus Aktif, sudah terurut). Server menyimpannya 5 menit lalu
+menyajikannya di `GET /api/paket` — dipakai kartu Harga, halaman Daftar, **dan** validasi
++ estimasi tagihan di `POST /api/daftar`, jadi ketiganya selalu sama dengan panel.
+
+- Pemetaan: `code`→`id`, `name`→`nama`, `tagline`→`untuk`, `price_monthly`/`price_yearly`
+  →`harga_bulanan`/`harga_tahunan` (0 = tidak dijual per periode itu; pilihan periodenya
+  dimatikan), `recommended`→lencana Rekomendasi, `cta_type=contact`→paket penawaran.
+- hub-control gagal → salinan terakhir yang berhasil; belum pernah berhasil sejak server
+  jalan → `paket.json`. Respons `/api/paket` membawa `sumber` (`hub-control`/`lokal`).
+- Tautan lama `daftar.html?paket=bisnis` tetap memilih Bisnis (code-nya `business`):
+  paket dicari per `id`, lalu per nama.
+- `/api/public/pricing` dibatasi 20/menit/IP dan CORS-nya hanya untuk `xpanca.id`, karena
+  itu dibaca lewat server, bukan langsung dari browser.
+
 ## Form Daftar Berlangganan
 
-`POST /api/daftar`. Wajib: `paket` (id di paket.json), `periode` (`bulanan`/`tahunan`,
+`POST /api/daftar`. Wajib: `paket` (code paket di katalog), `periode` (`bulanan`/`tahunan`,
 kecuali paket penawaran), `nama_pic`, `nama_usaha`, `phone`, `email`, `setuju`.
 Opsional: usulan subdomain (`<slug>.hub.xpanca.com`, pola SaaS branch `tenant` web-hub-v3).
 Isian data disamakan dengan form Coba Gratis (nama, nama usaha, WhatsApp, email, alamat
@@ -89,8 +105,9 @@ Hasilnya nomor pendaftaran `HUB-YYMMDD-XXXX` + satu baris di `data/pendaftaran.j
 (dengan estimasi tagihan saat mendaftar, status `baru`). Bila `HUBCTL_*` diisi, pendaftar
 **ikut didaftarkan ke hub-control** (lihat di bawah) — semua calon klien masuk satu
 antrean di menu Tenant. Pemetaan: `nama_usaha`→`business_name`, `nama_pic`→`full_name`,
-`phone`, `email`, `subdomain`. **Paket & periode belum bisa dikirim** (Partner API belum punya field-nya);
-keduanya hanya ada di jsonl sampai hub-control mendukungnya.
+`phone`, `email`, `subdomain`, plus paket produk: `intent=subscribe`, `package` = nama
+paket (mis. `Bisnis`), `period` = `bulanan`/`tahunan` (kosong untuk paket penawaran).
+Form Coba Gratis mengirim `intent=trial` + `package` pilihan pendaftar (kosong bila "Belum tahu").
 
 ## Form Coba Gratis (beranda, `#demo`)
 
