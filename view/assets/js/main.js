@@ -97,6 +97,38 @@
     reveals.forEach((el) => io.observe(el));
   }
 
+  /* ===================== Preview tampilan ===================== */
+
+  // Gesernya memakai scroll-snap bawaan peramban; di sini hanya tab dan keterangan.
+  const track = $("#tampilanTrack");
+  const tabWadah = $("#tampilanTab");
+  if (track && tabWadah) {
+    const tabs = $$("button", tabWadah);
+    const ket = $("#tampilanKet");
+    const posisi = () => Math.round(track.scrollLeft / track.clientWidth);
+    const geser = (i) => {
+      track.scrollTo({ left: i * track.clientWidth, behavior: reduce ? "auto" : "smooth" });
+    };
+    const tandai = () => {
+      const aktif = posisi();
+      tabs.forEach((b, i) => {
+        b.setAttribute("aria-selected", String(i === aktif));
+        b.tabIndex = i === aktif ? 0 : -1;
+      });
+      if (ket && tabs[aktif]) ket.textContent = tabs[aktif].dataset.ket;
+    };
+    tabs.forEach((b, i) => b.addEventListener("click", () => geser(i)));
+    tabWadah.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      const n = (posisi() + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+      geser(n);
+      tabs[n].focus();
+    });
+    track.addEventListener("scroll", tandai, { passive: true });
+    tandai();
+  }
+
   /* ===================== Paket (paket.json) ===================== */
 
   // Kartu Harga + pilihan paket di form demo, keduanya dari paket.json.

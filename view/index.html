@@ -30,7 +30,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <!-- ?v= = cache-buster: aset di-cache 1 hari (main.go), naikkan saat CSS/JS diubah. -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261027-4" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261107-6" />
   </head>
 
   <body>
@@ -58,6 +58,7 @@
         <div class="nav-menu" id="navMenu">
           <ul class="nav-links">
             <li><a href="#cara-kerja">Cara Kerja</a></li>
+            <li><a href="#tampilan">Tampilan</a></li>
             <li><a href="#modul">Modul</a></li>
             <li><a href="#produk">Produk</a></li>
             <li><a href="#harga">Harga</a></li>
@@ -188,6 +189,61 @@
                 <li><span class="chip">Buku Besar</span></li>
               </ul>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== TAMPILAN =====================
+           Isi data di gambar sudah diganti batang DI BERKASNYA, karena berkas tetap
+           bisa dibuka lewat URL. Tab & keterangan diatur main.js; tanpa JS gambarnya
+           tetap bisa digeser. -->
+      <section class="section tampilan" id="tampilan">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="kicker">Tampilan</span>
+            <h2>Intip tampilan HUB</h2>
+            <p>Dashboard, daftar, dan laporan dalam tampilan yang rapi dan mudah dipakai tim Anda.</p>
+          </div>
+        </div>
+
+        <!-- Kolase besar: pemanis, tidak bisa diklik. -->
+        <div class="tampilan-stage" role="img" aria-label="Cuplikan beberapa layar aplikasi HUB">
+          <div class="tampilan-grid">
+            <figure class="tampilan-tile"><img src="assets/images/tampilan/pembelian.png" alt="" loading="lazy" draggable="false" /></figure>
+            <figure class="tampilan-tile"><img src="assets/images/tampilan/dashboard.png" alt="" loading="lazy" draggable="false" /></figure>
+            <figure class="tampilan-tile"><img src="assets/images/tampilan/akun.png" alt="" loading="lazy" draggable="false" /></figure>
+            <figure class="tampilan-tile"><img src="assets/images/tampilan/penjualan.png" alt="" loading="lazy" draggable="false" /></figure>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="tampilan-preview reveal">
+            <div class="tampilan-tab" id="tampilanTab" role="tablist" aria-label="Pilih layar aplikasi">
+              <button type="button" role="tab" data-ket="Ringkasan penjualan dan jumlah transaksi per bulan.">Dashboard</button>
+              <button type="button" role="tab" data-ket="Total, sisa bayar, dan status bayar tiap faktur.">Penjualan</button>
+              <button type="button" role="tab" data-ket="Pantau pembelian dan utang per pemasok.">Pembelian</button>
+              <button type="button" role="tab" data-ket="Kode, nama, dan kategori akun untuk pembukuan.">Akun</button>
+            </div>
+
+            <div class="tampilan-browser">
+              <div class="tampilan-bar" aria-hidden="true">
+                <span></span><span></span><span></span>
+                <div class="tampilan-alamat">tokoanda.hub.xpanca.com</div>
+              </div>
+              <div class="tampilan-track" id="tampilanTrack" tabindex="0">
+                <div class="tampilan-slide" role="tabpanel"><img src="assets/images/tampilan/dashboard.png" alt="Layar Dashboard HUB dengan grafik penjualan, nilainya disamarkan" loading="lazy" draggable="false" /></div>
+                <div class="tampilan-slide" role="tabpanel"><img src="assets/images/tampilan/penjualan.png" alt="Layar Daftar Penjualan HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
+                <div class="tampilan-slide" role="tabpanel"><img src="assets/images/tampilan/pembelian.png" alt="Layar Daftar Pembelian HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
+                <div class="tampilan-slide" role="tabpanel"><img src="assets/images/tampilan/akun.png" alt="Layar Daftar Akun HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
+              </div>
+            </div>
+
+            <p class="tampilan-ket" id="tampilanKet">Ringkasan penjualan dan jumlah transaksi per bulan.</p>
+          </div>
+
+          <div class="tampilan-cta">
+            <p>Ingin melihat langsung dengan data usaha Anda?</p>
+            <a class="btn btn-primary" href="#demo"><i class="bi bi-play-circle"></i> Coba Gratis</a>
           </div>
         </div>
       </section>
@@ -606,6 +662,6 @@
 
     <script src="assets/js/config.js?v=20261027-4"></script>
     <script src="assets/js/paket.js?v=20261027-4"></script>
-    <script src="assets/js/main.js?v=20261027-4"></script>
+    <script src="assets/js/main.js?v=20261107-2"></script>
   </body>
 </html>

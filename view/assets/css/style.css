@@ -1746,3 +1746,191 @@ p {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===================== Tampilan (preview aplikasi) =====================
+   Satu bingkai browser dengan tab. Bagian bawahnya memudar supaya tetap terkesan
+   mengintip. Isi data sudah diganti batang di berkas gambarnya. */
+.tampilan {
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg-soft) 100%);
+}
+.tampilan .section-head {
+  margin-bottom: 28px;
+}
+.tampilan-preview {
+  max-width: 1020px;
+  margin: 0 auto;
+}
+.tampilan-tab {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.tampilan-tab button {
+  padding: 8px 18px;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tampilan-tab button:hover {
+  color: var(--brand-dark);
+  border-color: var(--brand);
+}
+.tampilan-tab button[aria-selected="true"] {
+  color: #fff;
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+.tampilan-browser {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 30px 60px -30px rgba(11, 61, 66, 0.4);
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+.tampilan-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #f4f7f7;
+  border-bottom: 1px solid var(--line);
+}
+.tampilan-bar > span {
+  width: 10px;
+  height: 10px;
+  background: #cdd9d9;
+  border-radius: 50%;
+}
+.tampilan-alamat {
+  flex: 0 1 300px;
+  min-width: 0;
+  margin-left: 10px;
+  padding: 2px 12px;
+  overflow: hidden;
+  color: var(--ink-3);
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: #fff;
+  border-radius: 999px;
+}
+.tampilan-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.tampilan-track::-webkit-scrollbar {
+  display: none;
+}
+.tampilan-track:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}
+.tampilan-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+.tampilan-slide img {
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+.tampilan-ket {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: 15px;
+  text-align: center;
+}
+.tampilan-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 20px;
+  margin-top: 28px;
+  text-align: center;
+}
+.tampilan-cta p {
+  margin: 0;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .tampilan-tab {
+    gap: 6px;
+  }
+  .tampilan-tab button {
+    padding: 7px 11px;
+    font-size: 13px;
+  }
+}
+
+/* Kolase besar di atas tab: miring, tepinya memudar. */
+.tampilan-stage {
+  position: relative;
+  height: clamp(320px, 46vw, 640px);
+  margin-bottom: 32px;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0, #000 12%, #000 84%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent 0, #000 12%, #000 84%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+}
+.tampilan-grid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(1380px, 118vw);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(14px, 2vw, 28px);
+  transform: translate(-50%, -50%) rotate(13deg);
+}
+.tampilan-tile {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  background: #fff;
+  border-radius: clamp(10px, 1.4vw, 18px);
+  box-shadow: 0 24px 50px -22px rgba(11, 61, 66, 0.45);
+}
+.tampilan-tile:nth-child(even) {
+  transform: translateY(9%);
+}
+.tampilan-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 0 0;
+}
+.tampilan-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.7) 100%);
+}
+@media (max-width: 600px) {
+  .tampilan-grid {
+    width: 190vw;
+  }
+}
