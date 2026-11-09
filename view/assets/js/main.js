@@ -99,34 +99,68 @@
 
   /* ===================== Preview tampilan ===================== */
 
-  // Gesernya memakai scroll-snap bawaan peramban; di sini hanya tab dan keterangan.
+  // Tab memilih produk. Pembukuan punya beberapa layar: geser (scroll-snap bawaan
+  // peramban) atau klik titik. Produk lain menampilkan ringkasannya.
   const track = $("#tampilanTrack");
   const tabWadah = $("#tampilanTab");
-  if (track && tabWadah) {
+  const titikWadah = $("#tampilanTitik");
+  if (track && tabWadah && titikWadah) {
     const tabs = $$("button", tabWadah);
+    const panel = tabs.map((b) => document.getElementById(b.dataset.panel));
+    const titik = $$("button", titikWadah);
     const ket = $("#tampilanKet");
-    const posisi = () => Math.round(track.scrollLeft / track.clientWidth);
-    const geser = (i) => {
-      track.scrollTo({ left: i * track.clientWidth, behavior: reduce ? "auto" : "smooth" });
+    const browser = $("#tampilanBrowser");
+    const posisi = () => (track.clientWidth ? Math.round(track.scrollLeft / track.clientWidth) : 0);
+    // Konsol Integrasi Partner: diputar ulang selama tabnya terbuka.
+    const konsol = $("#konsolApi");
+    const panelKonsol = konsol?.closest(".tampilan-panel");
+    let ulangKonsol;
+    const putarKonsol = () => {
+      clearTimeout(ulangKonsol);
+      konsol.classList.remove("jalan");
+      void konsol.offsetWidth; // paksa animasi mulai dari awal
+      konsol.classList.add("jalan");
+      if (!reduce) ulangKonsol = setTimeout(putarKonsol, 11000);
     };
-    const tandai = () => {
+    const tandaiLayar = () => {
       const aktif = posisi();
-      tabs.forEach((b, i) => {
-        b.setAttribute("aria-selected", String(i === aktif));
-        b.tabIndex = i === aktif ? 0 : -1;
+      titik.forEach((b, i) => {
+        if (i === aktif) b.setAttribute("aria-current", "true");
+        else b.removeAttribute("aria-current");
       });
-      if (ket && tabs[aktif]) ket.textContent = tabs[aktif].dataset.ket;
+      if (ket && titik[aktif]) ket.textContent = titik[aktif].dataset.ket;
     };
-    tabs.forEach((b, i) => b.addEventListener("click", () => geser(i)));
+    const pilih = (n) => {
+      tabs.forEach((b, i) => {
+        b.setAttribute("aria-selected", String(i === n));
+        b.tabIndex = i === n ? 0 : -1;
+        panel[i].hidden = i !== n;
+      });
+      // Tab pertama selalu Pembukuan, yang punya titik layar dan gambar memudar.
+      const adaLayar = n === 0;
+      titikWadah.hidden = !adaLayar;
+      if (ket) ket.hidden = !adaLayar;
+      browser.classList.toggle("tanpa-pudar", !adaLayar);
+      if (konsol) {
+        clearTimeout(ulangKonsol);
+        if (panel[n] === panelKonsol) putarKonsol();
+        else konsol.classList.remove("jalan");
+      }
+      if (adaLayar) tandaiLayar();
+    };
+    tabs.forEach((b, i) => b.addEventListener("click", () => pilih(i)));
     tabWadah.addEventListener("keydown", (e) => {
       if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
       e.preventDefault();
-      const n = (posisi() + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
-      geser(n);
+      const n = (tabs.findIndex((b) => b.getAttribute("aria-selected") === "true") + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+      pilih(n);
       tabs[n].focus();
     });
-    track.addEventListener("scroll", tandai, { passive: true });
-    tandai();
+    titik.forEach((b, i) => b.addEventListener("click", () => {
+      track.scrollTo({ left: i * track.clientWidth, behavior: reduce ? "auto" : "smooth" });
+    }));
+    track.addEventListener("scroll", tandaiLayar, { passive: true });
+    pilih(0);
   }
 
   /* ===================== Paket (paket.json) ===================== */

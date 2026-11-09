@@ -1751,7 +1751,7 @@ p {
    Satu bingkai browser dengan tab. Bagian bawahnya memudar supaya tetap terkesan
    mengintip. Isi data sudah diganti batang di berkas gambarnya. */
 .tampilan {
-  background: linear-gradient(180deg, #ffffff 0%, var(--bg-soft) 100%);
+  margin-top: 72px;
 }
 .tampilan .section-head {
   margin-bottom: 28px;
@@ -1932,5 +1932,148 @@ p {
 @media (max-width: 600px) {
   .tampilan-grid {
     width: 190vw;
+  }
+}
+
+/* Panel produk tanpa gambar dan titik layar Pembukuan. */
+.tampilan-tab button i {
+  margin-right: 4px;
+}
+.tampilan-ket[hidden],
+.tampilan-panel[hidden],
+.tampilan-titik[hidden] {
+  display: none;
+}
+.tampilan-browser.tanpa-pudar {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.tampilan-titik {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+.tampilan-titik button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.tampilan-titik button::before {
+  content: "";
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin: auto;
+  background: #a9bfbf;
+  border-radius: 50%;
+}
+.tampilan-titik button[aria-current="true"]::before {
+  background: var(--accent);
+}
+.tampilan-info {
+  padding: 40px clamp(20px, 5vw, 56px) 44px;
+}
+.tampilan-info-ikon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  color: var(--brand-dark);
+  font-size: 24px;
+  background: var(--brand-50);
+  border-radius: 14px;
+}
+.tampilan-info h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+}
+.tampilan-info p {
+  max-width: 560px;
+  margin: 0 0 16px;
+  color: var(--ink-2);
+}
+
+/* Konsol Integrasi Partner: gambar yang isinya sudah dikaburkan. Saat tab dibuka,
+   gambarnya terbuka baris demi baris. Tanpa JS atau bila gerak dimatikan, gambar utuh. */
+.tampilan-partner:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+.tampilan-partner .tampilan-info {
+  padding: 32px 28px;
+}
+.konsol {
+  min-width: 0;
+  background: var(--brand-900);
+}
+.konsol-kepala {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  color: #a9c4c4;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.konsol-status {
+  display: grid;
+  justify-items: end;
+}
+.konsol-status b {
+  grid-area: 1 / 1;
+  padding: 2px 9px;
+  font-weight: 700;
+  border-radius: 999px;
+}
+.konsol-status .tunggu {
+  color: #ffd98a;
+  background: rgba(255, 217, 138, 0.14);
+  opacity: 0;
+}
+.konsol-status .beres {
+  color: #7be3b4;
+  background: rgba(123, 227, 180, 0.14);
+}
+.konsol-gambar {
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .konsol.jalan .konsol-gambar {
+    animation: konsol-buka calc(var(--baris) * 170ms) steps(25, start) forwards;
+  }
+  .konsol.jalan .tunggu {
+    animation: konsol-tampil-sementara calc(var(--jawab) * 170ms) linear forwards;
+  }
+  .konsol.jalan .beres {
+    opacity: 0;
+    animation: konsol-masuk 0.2s ease-out forwards;
+    animation-delay: calc(var(--jawab) * 170ms);
+  }
+}
+@keyframes konsol-buka {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes konsol-masuk {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes konsol-tampil-sementara {
+  0%, 99% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (max-width: 860px) {
+  .tampilan-partner:not([hidden]) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
