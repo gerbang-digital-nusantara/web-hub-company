@@ -99,36 +99,60 @@
 
   /* ===================== Preview tampilan ===================== */
 
-  // Tab memilih produk. Pembukuan punya beberapa layar: geser (scroll-snap bawaan
-  // peramban) atau klik titik. Produk lain menampilkan ringkasannya.
-  const track = $("#tampilanTrack");
+  // Tab memilih produk. Panel yang punya beberapa layar (.tampilan-track:
+  // Pembukuan, Kasir) bisa digeser (scroll-snap bawaan peramban) atau dipilih
+  // lewat titik; titik & keterangan dibuat dari slide panel yang sedang terbuka.
   const tabWadah = $("#tampilanTab");
   const titikWadah = $("#tampilanTitik");
-  if (track && tabWadah && titikWadah) {
+  const navWadah = $("#tampilanNav") || titikWadah;
+  if (tabWadah && titikWadah) {
     const tabs = $$("button", tabWadah);
     const panel = tabs.map((b) => document.getElementById(b.dataset.panel));
-    const titik = $$("button", titikWadah);
     const ket = $("#tampilanKet");
     const browser = $("#tampilanBrowser");
-    const posisi = () => (track.clientWidth ? Math.round(track.scrollLeft / track.clientWidth) : 0);
-    // Konsol Integrasi Partner: diputar ulang selama tabnya terbuka.
-    const konsol = $("#konsolApi");
-    const panelKonsol = konsol?.closest(".tampilan-panel");
-    let ulangKonsol;
-    const putarKonsol = () => {
-      clearTimeout(ulangKonsol);
-      konsol.classList.remove("jalan");
-      void konsol.offsetWidth; // paksa animasi mulai dari awal
-      konsol.classList.add("jalan");
-      if (!reduce) ulangKonsol = setTimeout(putarKonsol, 11000);
+    let track = null;
+    const slides = () => (track ? $$(".tampilan-slide", track) : []);
+    const posisi = () => (track && track.clientWidth ? Math.round(track.scrollLeft / track.clientWidth) : 0);
+    // Gambar beranimasi (konsol Partner, percakapan AI): diputar ulang selama
+    // tabnya terbuka, berhenti saat pindah tab.
+    const animasi = $$("[data-animasi]");
+    const ulang = new Map();
+    const putar = (el) => {
+      clearTimeout(ulang.get(el));
+      el.classList.remove("jalan");
+      void el.offsetWidth; // paksa animasi mulai dari awal
+      el.classList.add("jalan");
+      if (!reduce) ulang.set(el, setTimeout(() => putar(el), 11000));
     };
     const tandaiLayar = () => {
       const aktif = posisi();
-      titik.forEach((b, i) => {
+      $$("button", titikWadah).forEach((b, i) => {
         if (i === aktif) b.setAttribute("aria-current", "true");
         else b.removeAttribute("aria-current");
       });
-      if (ket && titik[aktif]) ket.textContent = titik[aktif].dataset.ket;
+      const s = slides()[aktif];
+      if (ket && s) ket.textContent = s.dataset.ket || "";
+    };
+    // Layar tujuan geseran yang sedang berjalan. Panah dihitung dari sini, bukan
+    // dari posisi di tengah animasi, supaya klik beruntun tidak meleset.
+    let sasaran = null;
+    const geser = (i) => {
+      const n = slides().length;
+      if (!track || !n) return;
+      const ke = (i + n) % n; // berputar: dari layar terakhir kembali ke awal
+      sasaran = ke;
+      track.scrollTo({ left: ke * track.clientWidth, behavior: reduce ? "auto" : "smooth" });
+    };
+    const sekarang = () => (sasaran ?? posisi());
+    const buatTitik = () => {
+      titikWadah.textContent = "";
+      slides().forEach((s, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", s.dataset.label || "Layar " + (i + 1));
+        b.addEventListener("click", () => geser(i));
+        titikWadah.appendChild(b);
+      });
     };
     const pilih = (n) => {
       tabs.forEach((b, i) => {
@@ -136,19 +160,28 @@
         b.tabIndex = i === n ? 0 : -1;
         panel[i].hidden = i !== n;
       });
-      // Tab pertama selalu Pembukuan, yang punya titik layar dan gambar memudar.
-      const adaLayar = n === 0;
-      titikWadah.hidden = !adaLayar;
+      track = $(".tampilan-track", panel[n]);
+      sasaran = null;
+      const adaLayar = slides().length > 1;
+      navWadah.hidden = !adaLayar;
       if (ket) ket.hidden = !adaLayar;
-      browser.classList.toggle("tanpa-pudar", !adaLayar);
-      if (konsol) {
-        clearTimeout(ulangKonsol);
-        if (panel[n] === panelKonsol) putarKonsol();
-        else konsol.classList.remove("jalan");
+      // Hanya panel bertanda data-pudar (Pembukuan) yang bagian bawahnya memudar.
+      browser.classList.toggle("tanpa-pudar", !("pudar" in panel[n].dataset));
+      // Kasir adalah aplikasi Android: bingkainya tablet, bukan browser.
+      browser.classList.toggle("bingkai-tablet", tabs[n].dataset.bingkai === "tablet");
+      animasi.forEach((el) => {
+        clearTimeout(ulang.get(el));
+        if (panel[n].contains(el)) putar(el);
+        else el.classList.remove("jalan");
+      });
+      if (adaLayar) {
+        buatTitik();
+        tandaiLayar();
       }
-      if (adaLayar) tandaiLayar();
     };
     tabs.forEach((b, i) => b.addEventListener("click", () => pilih(i)));
+    $("#tampilanPrev")?.addEventListener("click", () => geser(sekarang() - 1));
+    $("#tampilanNext")?.addEventListener("click", () => geser(sekarang() + 1));
     tabWadah.addEventListener("keydown", (e) => {
       if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
       e.preventDefault();
@@ -156,10 +189,15 @@
       pilih(n);
       tabs[n].focus();
     });
-    titik.forEach((b, i) => b.addEventListener("click", () => {
-      track.scrollTo({ left: i * track.clientWidth, behavior: reduce ? "auto" : "smooth" });
-    }));
-    track.addEventListener("scroll", tandaiLayar, { passive: true });
+    // Sasaran dilepas begitu geseran berhenti (tak ada scroll selama 150 ms),
+    // termasuk geseran jari/trackpad yang tidak lewat panah.
+    let diam;
+    $$(".tampilan-track").forEach((t) => t.addEventListener("scroll", () => {
+      if (t !== track) return;
+      clearTimeout(diam);
+      diam = setTimeout(() => { sasaran = null; }, 150);
+      tandaiLayar();
+    }, { passive: true }));
     pilih(0);
   }
 

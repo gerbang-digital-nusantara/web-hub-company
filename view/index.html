@@ -30,7 +30,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <!-- ?v= = cache-buster: aset di-cache 1 hari (main.go), naikkan saat CSS/JS diubah. -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261109-2" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261109-5" />
   </head>
 
   <body>
@@ -372,7 +372,7 @@
             <div class="tampilan-tab" id="tampilanTab" role="tablist" aria-label="Pilih produk HUB">
               <button type="button" role="tab" id="tabProduk-pembukuan" aria-controls="panelProduk-pembukuan" data-panel="panelProduk-pembukuan"><i class="bi bi-journal-bookmark-fill"></i> Pembukuan</button>
               <button type="button" role="tab" id="tabProduk-toko" aria-controls="panelProduk-toko" data-panel="panelProduk-toko"><i class="bi bi-shop"></i> Toko Online</button>
-              <button type="button" role="tab" id="tabProduk-kasir" aria-controls="panelProduk-kasir" data-panel="panelProduk-kasir"><i class="bi bi-cart-fill"></i> Kasir</button>
+              <button type="button" role="tab" id="tabProduk-kasir" aria-controls="panelProduk-kasir" data-panel="panelProduk-kasir" data-bingkai="tablet"><i class="bi bi-cart-fill"></i> Kasir</button>
               <button type="button" role="tab" id="tabProduk-partner" aria-controls="panelProduk-partner" data-panel="panelProduk-partner"><i class="bi bi-plug-fill"></i> Integrasi Partner</button>
               <button type="button" role="tab" id="tabProduk-mcp" aria-controls="panelProduk-mcp" data-panel="panelProduk-mcp"><i class="bi bi-robot"></i> Asisten AI</button>
             </div>
@@ -382,12 +382,12 @@
                 <span></span><span></span><span></span>
                 <div class="tampilan-alamat">tokoanda.hub.xpanca.com</div>
               </div>
-              <div class="tampilan-panel" id="panelProduk-pembukuan" role="tabpanel" aria-labelledby="tabProduk-pembukuan">
+              <div class="tampilan-panel" id="panelProduk-pembukuan" role="tabpanel" aria-labelledby="tabProduk-pembukuan" data-pudar>
                 <div class="tampilan-track" id="tampilanTrack" tabindex="0">
-                  <div class="tampilan-slide"><img src="assets/images/tampilan/dashboard.png" alt="Layar Dashboard HUB dengan grafik penjualan, nilainya disamarkan" loading="lazy" draggable="false" /></div>
-                  <div class="tampilan-slide"><img src="assets/images/tampilan/penjualan.png" alt="Layar Daftar Penjualan HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
-                  <div class="tampilan-slide"><img src="assets/images/tampilan/pembelian.png" alt="Layar Daftar Pembelian HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
-                  <div class="tampilan-slide"><img src="assets/images/tampilan/akun.png" alt="Layar Daftar Akun HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar Dashboard" data-ket="Ringkasan penjualan dan jumlah transaksi per bulan."><img src="assets/images/tampilan/dashboard.png" alt="Layar Dashboard HUB dengan grafik penjualan, nilainya disamarkan" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar Penjualan" data-ket="Total, sisa bayar, dan status bayar tiap faktur."><img src="assets/images/tampilan/penjualan.png" alt="Layar Daftar Penjualan HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar Pembelian" data-ket="Pantau pembelian dan utang per pemasok."><img src="assets/images/tampilan/pembelian.png" alt="Layar Daftar Pembelian HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar Akun" data-ket="Kode, nama, dan kategori akun untuk pembukuan."><img src="assets/images/tampilan/akun.png" alt="Layar Daftar Akun HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
                 </div>
               </div>
               <div class="tampilan-panel tampilan-info" id="panelProduk-toko" role="tabpanel" aria-labelledby="tabProduk-toko" hidden>
@@ -400,10 +400,15 @@
                   <li><i class="bi bi-check2"></i>Subdomain gratis / domain sendiri</li>
                 </ul>
               </div>
-              <!-- Layar Kasir hub-pos (tablet) dengan data contoh. Menu, kategori, produk,
-                   dan keranjang sudah dikaburkan DI BERKASNYA supaya tidak bisa ditiru. -->
+              <!-- Layar Kasir hub-pos (tablet) dengan data contoh. Produk, keranjang, nominal,
+                   QR, dan isi struk sudah dikaburkan DI BERKASNYA supaya tidak bisa ditiru. -->
               <div class="tampilan-panel" id="panelProduk-kasir" role="tabpanel" aria-labelledby="tabProduk-kasir" hidden>
-                <img class="tampilan-gambar" src="assets/images/tampilan/kasir.png" alt="Layar aplikasi Kasir HUB di tablet: daftar produk dan keranjang, isinya disamarkan" width="1600" height="800" loading="lazy" draggable="false" />
+                <div class="tampilan-track" tabindex="0">
+                  <div class="tampilan-slide" data-label="Layar Kasir" data-ket="Cari produk dengan ketik, scan barcode, atau suara, lalu masukkan ke keranjang."><img src="assets/images/tampilan/kasir.png" alt="Layar Kasir HUB: daftar produk dan keranjang, isinya disamarkan" width="1600" height="800" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar Pembayaran" data-ket="Pilih pelanggan, jenis bayar, dan metode, lalu kembalian dihitung otomatis."><img src="assets/images/tampilan/kasir-bayar.png" alt="Layar Pembayaran Kasir HUB, nominalnya disamarkan" width="1600" height="800" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar QRIS" data-ket="Bayar QRIS: kasir menunggu pembayaran masuk sebelum transaksi dicatat."><img src="assets/images/tampilan/kasir-qris.png" alt="Layar Pembayaran QRIS Kasir HUB, kode QR dan nominalnya disamarkan" width="1600" height="800" loading="lazy" draggable="false" /></div>
+                  <div class="tampilan-slide" data-label="Layar Struk" data-ket="Transaksi selesai: struk bisa dicetak atau dikirim lewat WhatsApp."><img src="assets/images/tampilan/kasir-struk.png" alt="Layar Transaksi Selesai Kasir HUB, isi struknya disamarkan" width="1600" height="800" loading="lazy" draggable="false" /></div>
+                </div>
               </div>
               <div class="tampilan-panel tampilan-partner" id="panelProduk-partner" role="tabpanel" aria-labelledby="tabProduk-partner" hidden>
                 <div class="tampilan-info">
@@ -418,7 +423,7 @@
                 </div>
                 <!-- Gambar konsol: bentuknya mengikuti Partner API v1, nilainya contoh, dan isi
                      header/JSON sudah dikaburkan DI BERKASNYA supaya tidak bisa disalin. -->
-                <div class="konsol" id="konsolApi" role="img" aria-label="Contoh permintaan API penjualan yang dijawab 200 OK. Semua datanya contoh." style="--baris:25;--jawab:15">
+                <div class="konsol" id="konsolApi" data-animasi role="img" aria-label="Contoh permintaan API penjualan yang dijawab 200 OK. Semua datanya contoh." style="--baris:25;--jawab:15">
                   <div class="konsol-kepala">
                     <span>Contoh permintaan API</span>
                     <span class="konsol-status"><b class="tunggu">Mengirim…</b><b class="beres">200 OK</b></span>
@@ -426,23 +431,28 @@
                   <img class="konsol-gambar" src="assets/images/tampilan/partner-api.png" alt="" width="1207" height="1075" loading="lazy" draggable="false" />
                 </div>
               </div>
-              <div class="tampilan-panel tampilan-info" id="panelProduk-mcp" role="tabpanel" aria-labelledby="tabProduk-mcp" hidden>
-                <span class="tampilan-info-ikon"><i class="bi bi-robot"></i></span>
-                <h3>Asisten AI</h3>
-                <p>Hubungkan asisten AI ke data HUB lewat Model Context Protocol, untuk ringkasan dan laporan.</p>
-                <ul class="checks">
-                  <li><i class="bi bi-check2"></i>AI membaca data HUB</li>
-                  <li><i class="bi bi-check2"></i>Ringkasan &amp; laporan otomatis</li>
-                  <li><i class="bi bi-check2"></i>Default aman: baca saja</li>
-                </ul>
+              <div class="tampilan-panel tampilan-partner" id="panelProduk-mcp" role="tabpanel" aria-labelledby="tabProduk-mcp" hidden>
+                <div class="tampilan-info">
+                  <span class="tampilan-info-ikon"><i class="bi bi-robot"></i></span>
+                  <h3>Asisten AI</h3>
+                  <p>Hubungkan asisten AI ke data HUB lewat Model Context Protocol, untuk ringkasan dan laporan.</p>
+                  <ul class="checks">
+                    <li><i class="bi bi-check2"></i>AI membaca data HUB</li>
+                    <li><i class="bi bi-check2"></i>Ringkasan &amp; laporan otomatis</li>
+                    <li><i class="bi bi-check2"></i>Default aman: baca saja</li>
+                  </ul>
+                </div>
+                <!-- Ilustrasi percakapan dengan data contoh; angkanya dikaburkan DI BERKASNYA. -->
+                <div class="ai-obrolan" data-animasi role="img" aria-label="Contoh percakapan: pengguna menanyakan penjualan minggu ini dan stok yang hampir habis, Asisten AI menjawab dari data HUB.">
+                  <img class="ai-gambar" src="assets/images/tampilan/asisten-ai.png" alt="" width="1220" height="1090" loading="lazy" draggable="false" />
+                </div>
               </div>
             </div>
 
-            <div class="tampilan-titik" id="tampilanTitik">
-              <button type="button" aria-label="Layar Dashboard" data-ket="Ringkasan penjualan dan jumlah transaksi per bulan."></button>
-              <button type="button" aria-label="Layar Penjualan" data-ket="Total, sisa bayar, dan status bayar tiap faktur."></button>
-              <button type="button" aria-label="Layar Pembelian" data-ket="Pantau pembelian dan utang per pemasok."></button>
-              <button type="button" aria-label="Layar Akun" data-ket="Kode, nama, dan kategori akun untuk pembukuan."></button>
+            <div class="tampilan-navigasi" id="tampilanNav">
+              <button type="button" class="tampilan-panah" id="tampilanPrev" aria-label="Layar sebelumnya"><i class="bi bi-chevron-left"></i></button>
+              <div class="tampilan-titik" id="tampilanTitik"></div>
+              <button type="button" class="tampilan-panah" id="tampilanNext" aria-label="Layar berikutnya"><i class="bi bi-chevron-right"></i></button>
             </div>
             <p class="tampilan-ket" id="tampilanKet">Ringkasan penjualan dan jumlah transaksi per bulan.</p>
           </div>
@@ -716,6 +726,6 @@
 
     <script src="assets/js/config.js?v=20261027-4"></script>
     <script src="assets/js/paket.js?v=20261027-4"></script>
-    <script src="assets/js/main.js?v=20261107-5"></script>
+    <script src="assets/js/main.js?v=20261109-7"></script>
   </body>
 </html>

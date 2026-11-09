@@ -2085,3 +2085,80 @@ p {
   height: auto;
   user-select: none;
 }
+
+/* Bingkai tablet untuk layar aplikasi (tab Kasir). */
+.tampilan-browser.bingkai-tablet {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(8px, 1.6vw, 16px);
+  background: #1c2627;
+  border: 0;
+  border-radius: clamp(18px, 3vw, 30px);
+  box-shadow:
+    0 0 0 1px #2f3d3e inset,
+    0 30px 60px -28px rgba(11, 61, 66, 0.55);
+}
+.tampilan-browser.bingkai-tablet .tampilan-bar {
+  display: none;
+}
+.tampilan-browser.bingkai-tablet .tampilan-panel {
+  overflow: hidden;
+  border-radius: clamp(6px, 1vw, 10px);
+}
+
+/* Percakapan Asisten AI: gambar terbuka per bagian saat tab dibuka. */
+.ai-obrolan {
+  min-width: 0;
+  background: #f3f8f7;
+}
+.ai-gambar {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ai-obrolan.jalan .ai-gambar {
+    animation: konsol-buka 3.6s steps(6, start) forwards;
+  }
+}
+
+/* Panah geser di kiri-kanan titik (Pembukuan, Kasir). */
+.tampilan-navigasi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.tampilan-navigasi[hidden] {
+  display: none;
+}
+.tampilan-navigasi .tampilan-titik {
+  margin-top: 0;
+}
+.tampilan-panah {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--brand-dark);
+  font-size: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.tampilan-panah:hover {
+  color: #fff;
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+.tampilan-panah:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
