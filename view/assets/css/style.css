@@ -2162,3 +2162,18 @@ p {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
+
+/* Tanpa bingkai: gambar sudah memuat bingkai HP sendiri (tab Toko Online). */
+.tampilan-browser.bingkai-polos {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.tampilan-browser.bingkai-polos .tampilan-bar {
+  display: none;
+}
+.tampilan-browser.bingkai-polos .tampilan-gambar {
+  border-radius: var(--radius);
+}

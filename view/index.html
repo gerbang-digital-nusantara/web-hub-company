@@ -30,7 +30,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
     <!-- ?v= = cache-buster: aset di-cache 1 hari (main.go), naikkan saat CSS/JS diubah. -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261109-5" />
+    <link rel="stylesheet" href="assets/css/style.css?v=20261109-6" />
   </head>
 
   <body>
@@ -371,7 +371,7 @@
           <div class="tampilan-preview reveal">
             <div class="tampilan-tab" id="tampilanTab" role="tablist" aria-label="Pilih produk HUB">
               <button type="button" role="tab" id="tabProduk-pembukuan" aria-controls="panelProduk-pembukuan" data-panel="panelProduk-pembukuan"><i class="bi bi-journal-bookmark-fill"></i> Pembukuan</button>
-              <button type="button" role="tab" id="tabProduk-toko" aria-controls="panelProduk-toko" data-panel="panelProduk-toko"><i class="bi bi-shop"></i> Toko Online</button>
+              <button type="button" role="tab" id="tabProduk-toko" aria-controls="panelProduk-toko" data-panel="panelProduk-toko" data-bingkai="polos"><i class="bi bi-shop"></i> Toko Online</button>
               <button type="button" role="tab" id="tabProduk-kasir" aria-controls="panelProduk-kasir" data-panel="panelProduk-kasir" data-bingkai="tablet"><i class="bi bi-cart-fill"></i> Kasir</button>
               <button type="button" role="tab" id="tabProduk-partner" aria-controls="panelProduk-partner" data-panel="panelProduk-partner"><i class="bi bi-plug-fill"></i> Integrasi Partner</button>
               <button type="button" role="tab" id="tabProduk-mcp" aria-controls="panelProduk-mcp" data-panel="panelProduk-mcp"><i class="bi bi-robot"></i> Asisten AI</button>
@@ -390,15 +390,10 @@
                   <div class="tampilan-slide" data-label="Layar Akun" data-ket="Kode, nama, dan kategori akun untuk pembukuan."><img src="assets/images/tampilan/akun.png" alt="Layar Daftar Akun HUB, isi datanya disamarkan" loading="lazy" draggable="false" /></div>
                 </div>
               </div>
-              <div class="tampilan-panel tampilan-info" id="panelProduk-toko" role="tabpanel" aria-labelledby="tabProduk-toko" hidden>
-                <span class="tampilan-info-ikon"><i class="bi bi-shop"></i></span>
-                <h3>Toko Online</h3>
-                <p>Etalase toko online sendiri: pelanggan melihat produk dan memesan langsung.</p>
-                <ul class="checks">
-                  <li><i class="bi bi-check2"></i>Etalase produk untuk pelanggan</li>
-                  <li><i class="bi bi-check2"></i>Terima pesanan online</li>
-                  <li><i class="bi bi-check2"></i>Subdomain gratis / domain sendiri</li>
-                </ul>
+              <!-- Toko online HUB (hub-ecommerce) dengan data lokal, 4 layar HP: beranda,
+                   keranjang, checkout, ringkasan. Harga & nama produk dikaburkan DI BERKASNYA. -->
+              <div class="tampilan-panel" id="panelProduk-toko" role="tabpanel" aria-labelledby="tabProduk-toko" hidden>
+                <img class="tampilan-gambar" src="assets/images/tampilan/toko-online.png" alt="Toko online HUB di HP: beranda, keranjang, checkout, dan ringkasan pesanan; harga dan nama produk disamarkan" width="1600" height="800" loading="lazy" draggable="false" />
               </div>
               <!-- Layar Kasir hub-pos (tablet) dengan data contoh. Produk, keranjang, nominal,
                    QR, dan isi struk sudah dikaburkan DI BERKASNYA supaya tidak bisa ditiru. -->
@@ -726,6 +721,6 @@
 
     <script src="assets/js/config.js?v=20261027-4"></script>
     <script src="assets/js/paket.js?v=20261027-4"></script>
-    <script src="assets/js/main.js?v=20261109-7"></script>
+    <script src="assets/js/main.js?v=20261109-8"></script>
   </body>
 </html>

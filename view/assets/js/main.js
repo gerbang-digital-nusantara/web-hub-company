@@ -169,6 +169,8 @@
       browser.classList.toggle("tanpa-pudar", !("pudar" in panel[n].dataset));
       // Kasir adalah aplikasi Android: bingkainya tablet, bukan browser.
       browser.classList.toggle("bingkai-tablet", tabs[n].dataset.bingkai === "tablet");
+      // Gambar yang sudah berbingkai sendiri (Toko Online: deretan HP) tampil polos.
+      browser.classList.toggle("bingkai-polos", tabs[n].dataset.bingkai === "polos");
       animasi.forEach((el) => {
         clearTimeout(ulang.get(el));
         if (panel[n].contains(el)) putar(el);
