@@ -2077,3 +2077,11 @@ p {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Panel produk berisi satu gambar utuh (mis. Kasir). */
+.tampilan-gambar {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
