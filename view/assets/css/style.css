@@ -2177,3 +2177,21 @@ p {
 .tampilan-browser.bingkai-polos .tampilan-gambar {
   border-radius: var(--radius);
 }
+
+/* Slide Pembukuan dimiringkan 3D supaya tampil sebagai cuplikan, bukan
+   tangkapan layar utuh yang mudah dibaca. */
+#panelProduk-pembukuan .tampilan-slide {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 5%;
+  background: linear-gradient(160deg, #f6faf9 0%, #e2eeec 100%);
+  perspective: 1400px;
+}
+#panelProduk-pembukuan .tampilan-slide img {
+  width: 84%;
+  border-radius: 10px;
+  box-shadow: 0 34px 60px -26px rgba(11, 61, 66, 0.5);
+  transform: rotateX(16deg) rotateY(-14deg) rotateZ(2deg);
+  transform-origin: 50% 0;
+}
